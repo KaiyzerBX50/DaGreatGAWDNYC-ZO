@@ -2,16 +2,20 @@
 
 This repository is the home for your Zo Skills.
 
-## What’s inside
+## Folder layout
 
-- `Skills/` — each subfolder is a Skill (a self-contained automation/tool Zo can run)
+- Each top-level folder is one Skill.
+- Inside each Skill folder:
+  - `SKILL.md` describes the Skill and how Zo should use it
+  - `scripts/` contains optional code for the Skill
 
-## How to add a new Skill
+## Adding a new Skill
 
-1. Create a new folder under `Skills/` (use a short, lowercase name with hyphens)
-2. Add a `SKILL.md` inside that folder
-3. Add any scripts under `scripts/` (optional)
+1. Create a new folder at the repo root (use a short, lowercase name with hyphens)
+2. Add a `SKILL.md`
+3. Add `scripts/` if the Skill needs code
 
-## Notes
+## Secrets
 
-- Do not commit secrets (API keys, passwords). Store secrets in Zo at **Settings → Advanced → Secrets**.
+Do not commit API keys or passwords.
+Store secrets in Zo at **Settings → Advanced → Secrets**.
