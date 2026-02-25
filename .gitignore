@@ -22,3 +22,12 @@ __pycache__/
 # IDE
 .vscode/
 .idea/
+
+# Local-only skills (kept on Zo, not tracked in this repo)
+humanizer/
+humanizer-2/
+prompt-improver/
+zo-create-site/
+zo-create-slidedeck/
+zo-daily-linear-digest/
+zo-resize-image/
