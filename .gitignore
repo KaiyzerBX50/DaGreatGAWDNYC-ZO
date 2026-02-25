@@ -31,3 +31,6 @@ zo-create-site/
 zo-create-slidedeck/
 zo-daily-linear-digest/
 zo-resize-image/
+
+# Private skill repo (kept local, tracked separately)
+prompt-master-astranode/
