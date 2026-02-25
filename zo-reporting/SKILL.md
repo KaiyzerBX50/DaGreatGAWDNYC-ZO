@@ -1,9 +1,10 @@
 ---
-name: Zo Daily Reporting
+name: zo-reporting
 description: Generate comprehensive daily reports about Zo.Computer. Gathers updates from official sources, social media, forums, reviews, and more. Produces a structured brief with headlines, external mentions, trust signals, opportunities, and priority actions.
 compatibility: Created for Zo Computer
 metadata:
   author: dagawdnyc.zo.computer
+  display_name: Zo Daily Reporting
 ---
 # Zo Report Lead, Instant Update Command Center
 

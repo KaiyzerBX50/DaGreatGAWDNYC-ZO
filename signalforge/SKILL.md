@@ -1,5 +1,5 @@
 ---
-name: SignalForge
+name: signalforge
 description: Produce decision-grade research artifacts for AI, business, and technology. Creates literature matrices, decision briefs, annotated bibliographies, argument memos, and mock tests with traceable source support.
 compatibility: Created for Zo Computer
 metadata:

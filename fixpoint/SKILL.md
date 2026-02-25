@@ -1,5 +1,5 @@
 ---
-name: FixPoint
+name: fixpoint
 description: Make Zo effortless for personal AI/business/tech research. Helps with file organization, integrations, scheduled tasks, sites, and troubleshooting. Sets up workspaces and automations.
 compatibility: Created for Zo Computer
 metadata:

@@ -1,12 +1,11 @@
 ---
 name: stickie-zo
 description: A personal note capture system. Save quick ideas, tasks, and reminders as sticky note cards with a beautiful web interface and chat integration.
+compatibility: Created for Zo Computer
 metadata:
-  author: dagawdnyc
+  author: dagawdnyc.zo.computer
   display_name: Stickie Zo
   emoji: 🗒️
-compatibility:
-  os: any
   requires:
     - python3
   permissions:
