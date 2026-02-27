@@ -59,6 +59,20 @@ bun /home/workspace/Skills/zo-signal-pulse/scripts/pulse.ts \
   --meeting-type "Client delivery review"
 ```
 
+### By piping notes (stdin)
+
+If you do not pass `--notes` or `--notes-file`, the script reads meeting notes from stdin:
+
+```
+cat /home/workspace/meeting-notes.md | bun /home/workspace/Skills/zo-signal-pulse/scripts/pulse.ts \
+  --team "Alex,Blair,Casey" \
+  --meeting-type "Weekly team sync"
+```
+
+### Optional flags
+
+- `--outdir <path>`: Override where outputs are saved (default is `runs/<timestamp>`)
+
 ## Requirements
 
 - Bun runtime available on Zo
