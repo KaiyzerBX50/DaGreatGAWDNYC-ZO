@@ -1,0 +1,16 @@
+{
+  "name": "Zo Teacher OS",
+  "description": "Prompt builder and sample exports for K-12 lesson planning",
+  "repository": "https://github.com/KaiyzerBX50/DaGreatGAWDNYC-ZO",
+  "keywords": ["education", "lesson-planning", "ai", "prompt-engineering", "differentiation"],
+  "author": "KaiyzerBX50",
+  "liveUrl": "https://dagawdnyc.zo.space/teacher-os",
+  "stack": ["React", "Tailwind CSS", "Hono"],
+  "features": [
+    "Customizable prompt builder by grade/subject/topic",
+    "Multi-format exports (DOCX, PDF, PPTX, CSV)",
+    "Differentiation and accessibility built-in",
+    "Standards-aligned lesson generation",
+    "Works with any AI chat platform"
+  ]
+}
