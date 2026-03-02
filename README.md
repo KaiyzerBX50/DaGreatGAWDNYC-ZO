@@ -6,6 +6,7 @@ This repository is the home for your Zo Skills.
 
 - fixpoint
 - signalforge
+- skill-arbitrage-detector
 - stickie-zo
 - strategic-option-generator
 - zo-reporting
