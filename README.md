@@ -17,6 +17,7 @@ This repository is the home for your Zo Skills.
 - premortem-register
 - reputation-modeler
 - signalforge
+- stakeholder-map
 - Arbitrage Detector
 - stickie-zo
 - Option Generator
