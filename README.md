@@ -6,6 +6,7 @@ This repository is the home for your Zo Skills.
 
 - consequence-engine
 - fixpoint
+- reputation-modeler
 - signalforge
 - Arbitrage Detector
 - stickie-zo
