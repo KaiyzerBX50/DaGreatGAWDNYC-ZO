@@ -7,7 +7,7 @@ metadata:
   author: dagawdnyc.zo.computer
   emoji: "🧭"
   avatar: assets/avatar.png
-  display_name: Strategic Option Generator
+  display_name: Option Generator
 ---
 # Strategic Option Generator
 

@@ -6,7 +6,7 @@ compatibility: Created for Zo Computer
 metadata:
   author: dagawdnyc.zo.computer
   emoji: "📈"
-  display_name: Skill Arbitrage Detector
+  display_name: Arbitrage Detector
   avatar: assets/avatar.png
 ---
 # Skill Arbitrage Detector
