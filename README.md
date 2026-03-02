@@ -12,6 +12,7 @@ This repository is the home for your Zo Skills.
 - consequence-engine
 - decision-architect
 - evidence-calibrator
+- experiment-designer
 - fixpoint
 - premortem-register
 - reputation-modeler
