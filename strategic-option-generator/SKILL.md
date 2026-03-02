@@ -9,7 +9,7 @@ metadata:
   avatar: assets/avatar.png
   display_name: Option Generator
 ---
-# Strategic Option Generator
+# Option Generator
 
 ## Purpose
 

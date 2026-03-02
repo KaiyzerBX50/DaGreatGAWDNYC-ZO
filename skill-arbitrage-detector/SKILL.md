@@ -9,7 +9,7 @@ metadata:
   display_name: Arbitrage Detector
   avatar: assets/avatar.png
 ---
-# Skill Arbitrage Detector
+# Arbitrage Detector
 
 ## Purpose
 
