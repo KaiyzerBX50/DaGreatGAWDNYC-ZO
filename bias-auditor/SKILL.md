@@ -1,8 +1,14 @@
 ---
 name: bias-auditor
-description: "Use when the user asks for a critique or sanity check of their reasoning, plan, bel
-[truncated]
-ts
+description: "Use when the user asks for a critique or sanity check of their reasoning, plan, belief, or strategy. Triggers: review my plan, sanity check, am I missing something, is this smart, pressure test this, critique my reasoning."
+priority: high
+compatibility: Created for Zo Computer
+metadata:
+  author: dagawdnyc.zo.computer
+  emoji: "🧠"
+  display_name: Cognitive Bias Auditor
+  avatar: assets/avatar.png
+---
 
 \## Confidence Calibration
 

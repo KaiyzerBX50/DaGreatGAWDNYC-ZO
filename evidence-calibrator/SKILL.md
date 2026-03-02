@@ -1,13 +1,11 @@
 ---
 name: evidence-calibrator
-description: "Use when the user is drawing strong conclusions from limited data, anecdotes, or unclear evidence and needs c
-[truncated]
-vidence quality or base rate logic
-- Provide action steps to improve evidence, not just critique
-mpatibility: Created for Zo Comput
-[truncated]
-brator
+description: "Use when the user is drawing strong conclusions from limited data, anecdotes, or unclear evidence and needs calibrated confidence. Triggers: do you think this is true, how confident should I be, based on this, I saw a post, I heard from someone."
+priority: high
+compatibility: Created for Zo Computer
+metadata:
+  author: dagawdnyc.zo.computer
+  emoji: "⚖️"
+  display_name: Evidence Calibrator
   avatar: assets/avatar.png
 ---
-
-# Evidence Calibrator
