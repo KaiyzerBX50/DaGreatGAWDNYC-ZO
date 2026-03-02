@@ -1,6 +1,16 @@
 ---
 name: consequence-engine
-description: "Use when the user asks about downstream impact, unintended consequences, or long horizon effects of an action, decision, or policy. Triggers: what happens if, downstream effects, ripple effects, unintended consequences, long term impact."
+description: "Use when the user asks about downstream impact, unintended
+[truncated]
+onsequences, or long horiz
+[truncated]
+act, decision, or policy. Triggers: what
+[truncated]
+ppen if, downstr
+[truncated]
+effects, ripple effects, unintended cons
+[truncated]
+uences, long term impact."
 priority: medium
 compatibility: Created for Zo Computer
 metadata:
@@ -9,6 +19,7 @@ metadata:
   display_name: Consequence Engine
   avatar: assets/avatar.png
 ---
+
 # Consequence Engine
 
 ## Purpose
