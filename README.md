@@ -5,6 +5,7 @@ This repository is the home for your Zo Skills.
 ## Current skills
 
 - classroom-packager
+- communication-studio
 - consequence-engine
 - fixpoint
 - reputation-modeler
