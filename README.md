@@ -6,6 +6,7 @@ This repository is the home for your Zo Skills.
 
 - bias-auditor
 - classroom-packager
+- cognitive-orchestrator
 - communication-studio
 - consequence-engine
 - decision-architect
