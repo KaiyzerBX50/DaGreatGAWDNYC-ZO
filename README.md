@@ -13,6 +13,7 @@ This repository is the home for your Zo Skills.
 - decision-architect
 - evidence-calibrator
 - fixpoint
+- premortem-register
 - reputation-modeler
 - signalforge
 - Arbitrage Detector
