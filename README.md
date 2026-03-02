@@ -11,6 +11,7 @@ This repository is the home for your Zo Skills.
 - communication-studio
 - consequence-engine
 - decision-architect
+- decision-postmortem
 - evidence-calibrator
 - experiment-designer
 - fixpoint
