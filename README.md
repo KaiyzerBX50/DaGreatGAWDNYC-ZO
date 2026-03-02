@@ -8,6 +8,7 @@ This repository is the home for your Zo Skills.
 - classroom-packager
 - communication-studio
 - consequence-engine
+- decision-architect
 - fixpoint
 - reputation-modeler
 - signalforge
