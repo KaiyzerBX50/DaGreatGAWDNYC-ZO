@@ -1,11 +1,11 @@
 ---
 name: strategic-option-generator
-description: Use when the user frames a situation as a narrow set of choices, a binary decision, or says they have limited options. Triggers: only options, A or B, either this or that, stuck between, no other choice.
+description: "Use when the user frames a situation as a narrow set of choices, a binary decision, or says they have limited options. Triggers: only options, A or B, either this or that, stuck between, no other choice."
 priority: medium
 compatibility: Created for Zo Computer
 metadata:
   author: dagawdnyc.zo.computer
-  emoji: 🧭
+  emoji: "🧭"
   avatar: assets/avatar.png
   display_name: Strategic Option Generator
 ---
