@@ -4,10 +4,14 @@ description: >-
   Use when an educator asks to align content, lessons, or assessments to standards
   or learning outcomes. Triggers: align to standards, standards mapping, curriculum
   alignment, learning objectives, unpack the standard, proficiency levels.
+priority: medium
 compatibility: Created for Zo Computer
 metadata:
   author: dagawdnyc.zo.computer
-  emoji: 🎯
+  emoji: "🎯"
+  display_name: Standards Alignment Mapper
+  avatar: assets/avatar.png
+---
 
 # Purpose
 

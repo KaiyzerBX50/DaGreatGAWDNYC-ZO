@@ -7,6 +7,7 @@ This repository is the home for your Zo Skills.
 - assumption-ledger
 - bias-auditor
 - classroom-packager
+- classroom-materials-packager
 - cognitive-orchestrator
 - communication-studio
 - consequence-engine
