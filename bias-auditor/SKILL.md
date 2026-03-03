@@ -5,35 +5,31 @@ priority: high
 compatibility: Created for Zo Computer
 metadata:
   author: dagawdnyc.zo.computer
-  emoji: "🧠"
-  display_name: Cognitive Bias Auditor
   avatar: assets/avatar.png
+  display_name: Cognitive Bias Auditor
+  emoji: 🧠
 ---
+# Cognitive Bias Auditor
 
-\## Confidence Calibration
+## Confidence Calibration
+- Provide a confidence level: low, medium, high
+- Explain what would raise confidence fastest
 
-\- Provide a confidence level: low, medium, high
+## Output Format
+### Claims
 
-\- Explain what would raise confidence fastest
+### Assumptions
 
-\# Output Format
+### Bias Flags
 
-\## Claims
+### Counter Models
 
-\## Assumptions
+### Falsification Tests
 
-\## Bias Flags
+### Confidence Calibration
 
-\## Counter Models
+### Next Action
 
-\## Falsification Tests
-
-\## Confidence Calibration
-
-\## Next Action
-
-\# Quality Bar
-
-\- Critique logic, not the person
-
-\- Make it usable: each critique ties to a test or adjustment
+## Quality Bar
+- Critique logic, not the person
+- Make it usable: each critique ties to a test or adjustment
