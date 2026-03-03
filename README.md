@@ -4,6 +4,7 @@ This repository is the home for your Zo Skills.
 
 ## Current skills
 
+- ai-adoption-playbook-for-teams
 - assumption-ledger
 - bias-auditor
 - classroom-packager
