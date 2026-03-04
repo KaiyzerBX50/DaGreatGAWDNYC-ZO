@@ -15,9 +15,9 @@ Zo Teacher OS is a prompt-builder interface hosted on zo.space that helps K–12
 - **Prompt Builder** — Visual form to describe class context (grade, subject, duration, differentiation needs, materials constraints)
 - **Preset Workflows** — One-click templates for common scenarios (2nd Grade ELA, 7th Grade Science, 9th Grade Algebra, 5th Grade Social Studies)
 - **Copy-Paste Prompts** — Generate AI-ready prompts that work with Claude, ChatGPT, Gemini, or any LLM
-- **Export Options**
-  - Download ZIP locally
-  - Export directly to your Zo workspace
+- **Two Export Paths**
+  - **Path A:** Run directly in Zo (requires API token) — generates package in your workspace
+  - **Path B:** Copy prompt to any AI chat — download results locally
 - **Ready-to-Use Outputs**
   - Lesson Plan (DOCX)
   - One-Page Plan (PDF)
@@ -68,29 +68,17 @@ Users input:
 - Handout type (Worksheet, Study Guide, Exit Ticket, etc.)
 - Assessment preference (Mixed, Exit ticket, Quiz, etc.)
 
-### 2. Copy & Paste Prompt
-The builder generates a structured prompt:
-```
-Create a complete instructional package using Zo Teacher OS.
+### 2. Choose Your Export Path
 
-Inputs
-- grade_level: 7
-- subject: Science
-- lesson_topic: Food Webs and Human Impact
-- ...
+**Path A: Run in Zo** (requires Zo account & API token)
+- Generates content directly in your Zo workspace
+- All files created and organized automatically
+- No manual download/copy steps
 
-Requirements
-- Do not invent official standard codes.
-- Include differentiation for struggling learners, advanced learners, English learners, and IEP/504.
-- Include behavior and classroom management supports.
-- Include 3 embedded formative checks, 1 summative, and a 4-level rubric.
-- Include 3 CSV blocks (gradebook, standards mastery, MTSS) with 10 empty rows each.
-
-Output
-Return Teacher Snapshot, then (if Unit) Unit Export, then Word Export, PDF Export, Excel Export, then Bonus Exports.
-```
-
-Users paste this into Claude, ChatGPT, or any AI chat.
+**Path B: Copy & Paste** (works anywhere)
+- Copy the generated prompt
+- Paste into Claude, ChatGPT, Gemini, or any AI
+- Download results manually from the AI's response
 
 ### 3. Export Package
 After AI generates content, users can:
@@ -162,6 +150,27 @@ Tested and working with:
 - Career & Technical Education
 - *And more — works with any subject*
 
+## Recent Updates (March 4, 2026)
+
+- Removed "Send anonymous usage stats" control for cleaner UX
+- Created public preview version at `/teacher-os-public` with Path A disabled
+- Clarified two-path export workflow (Zo API vs. manual copy-paste)
+- Updated referral links to `https://www.zo.computer/signup?referrer=dagawdnyc`
+- Fixed runtime errors and optimized bundle loading
+- Verified all sample downloads and interactive features
+
+## Two Versions
+
+**Main Version:** https://dagawdnyc.zo.space/teacher-os
+- Full functionality (both Path A and Path B)
+- Requires Zo account for Path A
+- Recommended for educators and Zo users
+
+**Public Preview:** https://dagawdnyc.zo.space/teacher-os-public
+- Path A disabled with signup prompt
+- Path B (copy-paste) fully available
+- Good for sharing with teachers exploring options
+
 ## FAQ
 
 **How long does it actually take?**
@@ -206,4 +215,4 @@ Created by **dagawdnyc** for educators using Zo Computer.
 
 ---
 
-**Last Updated:** February 28, 2026
+**Last Updated:** March 4, 2026

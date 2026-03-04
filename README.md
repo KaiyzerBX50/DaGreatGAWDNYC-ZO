@@ -1,6 +1,31 @@
 # DaGreatGAWDNYC-ZO
 
-This repository is the home for your Zo Skills.
+This repository is the home for your Zo Skills and projects.
+
+## Featured Project: Zo Teacher OS
+
+**Lesson planning that ends with a real package.**
+
+A prompt-builder web app for K-12 educators to generate ready-to-teach lesson packages in minutes.
+
+- **Live:** https://dagawdnyc.zo.space/teacher-os
+- **Public Preview:** https://dagawdnyc.zo.space/teacher-os-public
+- **Tech:** React + TypeScript, Tailwind CSS, zo.space (Bun + Hono)
+- **Documentation:** `zo-teacher-os/README.md`
+
+**Two export paths:**
+- **Path A:** Generate directly in Zo (requires API token)
+- **Path B:** Copy prompt to Claude, ChatGPT, or any AI
+
+**Latest (March 4, 2026):**
+- Removed "Send anonymous usage stats" checkbox
+- Created public preview with Path A disabled
+- Fixed runtime errors and optimized bundle loading
+- Updated referral flow to Zo signup
+
+See `zo-teacher-os/README.md` for full documentation and setup guide.
+
+---
 
 ## Current skills
 
