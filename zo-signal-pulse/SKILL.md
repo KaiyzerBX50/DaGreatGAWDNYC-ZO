@@ -6,7 +6,6 @@ metadata:
   author: dagawdnyc.zo.computer
   display_name: Zo Signal Pulse
 ---
-
 # Zo Signal Pulse
 
 ## What this skill does
@@ -22,6 +21,37 @@ Turn raw meeting notes into execution intelligence:
 - Meeting effectiveness score and grade
 - Concrete improvement actions
 - A ready-to-send follow-up message
+
+## Setup (one-time)
+
+Want a one-click web interface with your own API key and passcode?
+
+```bash
+bun /home/workspace/Skills/zo-signal-pulse/scripts/setup.ts
+```
+
+This creates your private Signal Pulse pages on zo.space and configures them with your Zo API key. You'll be prompted to save two secrets: `SIGNAL_PULSE_ZO_API_KEY` and `SIGNAL_PULSE_PASSCODE`.
+
+If you skip this, you can always run Signal Pulse from the command line.
+
+## Quick start
+
+### CLI
+
+```
+bun /home/workspace/Skills/zo-signal-pulse/scripts/pulse.ts \
+  --notes-file /home/workspace/meeting-notes.md \
+  --team "Alex,Blair,Casey" \
+  --meeting-type "Weekly team sync" \
+  --tone "Structured professional"
+```
+
+### Web interface
+
+1. Go to [zo.space/signal-pulse](https://zo.space/signal-pulse).
+2. Enter your passcode.
+3. Paste your meeting notes into the text box.
+4. Click "Analyze".
 
 ## Inputs
 
