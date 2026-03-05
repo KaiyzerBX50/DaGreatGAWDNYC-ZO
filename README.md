@@ -29,18 +29,16 @@ See `zo-teacher-os/README.md` for full documentation and setup guide.
 
 ## Current skills
 
-- ai-adoption-playbook-for-teams
-- automation-builder-no-code
 - assumption-ledger
 - bias-auditor
 - classroom-packager
-- classroom-materials-packager
 - cognitive-orchestrator
 - communication-studio
 - consequence-engine
 - decision-architect
 - decision-postmortem
 - evidence-calibrator
+- evidence-weight-calculator
 - experiment-designer
 - fixpoint
 - premortem-register
