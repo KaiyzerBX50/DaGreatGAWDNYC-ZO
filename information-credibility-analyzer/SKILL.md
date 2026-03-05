@@ -1,6 +1,6 @@
 ---
 name: information-credibility-analyzer
-description: "Evaluate credibility of claims, articles, posts, or research. Trigger on: is this credible, fact check this, verify this claim, analyze this article, evaluate this source, is this misinformation."
+description: "Evaluate credibility of claims, posts, articles, or research. Trigger on: fact check this, is this credible, evaluate this source, verify this claim, detect misinformation."
 priority: high
 compatibility: Created for Zo Computer
 metadata:
@@ -14,71 +14,76 @@ metadata:
 
 ## Mission
 
-Evaluate the credibility of information by analyzing claims, sources, evidence, and logical structure.
+Assess the credibility of information by examining claims, evidence, sources, reasoning, and context.
 
-This skill focuses on credibility assessment, not simple summarization.
+This skill focuses on credibility evaluation, not summarization.
 
 ## Use When
 
-- The user pastes an article, post, or claim and asks if it is credible.
-- The user wants fact-checking or evidence evaluation.
-- The user wants to detect misinformation or weak arguments.
+- The user pastes text and asks if it is credible.
+- The user wants verification or fact-checking.
+- The user is concerned about misinformation.
 
 ## Avoid When
 
 - The user only wants a summary.
-- The user asks for opinion or speculation.
+- The user asks for speculation or opinion without evidence.
 
-## Required Output Structure
+## Output Contract
 
-## 1) Claim Extraction
+## 1) Claim Identification
 
-Identify the primary claims and supporting claims.
+List the primary claim and supporting claims.
 
-## 2) Evidence Evaluation
+## 2) Evidence Assessment
 
 For each claim:
 
-- Evidence type (data, anecdote, expert opinion, citation)
-- Strength: weak | moderate | strong
-- Gaps in supporting evidence
+- Evidence type: data, anecdote, expert opinion, citation, unknown
+- Evidence strength: weak | moderate | strong
+- Missing evidence
 
 ## 3) Source Credibility
 
 Evaluate:
 
-- Author authority
+- Author expertise
 - Publication reputation
 - Transparency of sources
-- Potential bias or incentives
+- Possible bias or incentives
 
-## 4) Logical Consistency
+## 4) Reasoning Analysis
 
-Analyze reasoning:
+Identify:
 
-- Valid reasoning steps
+- Logical strengths
 - Logical fallacies
 - Unsupported assumptions
 
-## 5) Missing Context
+## 5) Context Check
 
-Identify what information would be required to verify the claim fully.
+Explain missing context needed to properly evaluate the claim.
 
-## 6) Credibility Assessment
+## 6) Credibility Judgment
 
 Provide:
 
-- Overall credibility: low | moderate | high
-- Risk of misinformation: low | moderate | high
+- Credibility: low | moderate | high
+- Misinformation risk: low | moderate | high
 - Key reasons
 
-## 7) Confidence and Tipping Variables
+## 7) Verification Steps
 
-- Confidence: low | medium | high
-- Tipping variables: evidence that could significantly change the evaluation
+List actions the user can take to verify the claim.
+
+## 8) Confidence and Tipping Variables
+
+Confidence: low | medium | high
+
+Tipping variables: evidence that could significantly change the assessment.
 
 ## Quality Rules
 
-- Separate evidence from opinion.
-- Do not assume falsehood without evidence.
-- Clearly distinguish verified facts from uncertainty.
+- Separate verified facts from assumptions.
+- Avoid certainty without evidence.
+- Clearly mark uncertainty.

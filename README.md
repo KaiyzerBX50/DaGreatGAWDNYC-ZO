@@ -30,13 +30,16 @@ See `zo-teacher-os/README.md` for full documentation and setup guide.
 ## Current skills
 
 - assumption-ledger
+- assumption-extractor
 - bias-auditor
 - classroom-packager
 - cognitive-orchestrator
 - communication-studio
 - consequence-engine
+- constraint-solver
 - decision-architect
 - decision-postmortem
+- decision-tradeoff-visualizer
 - evidence-calibrator
 - evidence-weight-calculator
 - experiment-designer
@@ -44,12 +47,14 @@ See `zo-teacher-os/README.md` for full documentation and setup guide.
 - fixpoint
 - information-credibility-analyzer
 - knowledge-structure-mapper
+- opportunity-gap-finder
 - premortem-register
 - problem-reframer
 - research-method-advisor
 - reputation-modeler
 - scenario-comparison-engine
 - signalforge
+- signal-vs-noise-filter
 - stakeholder-map
 - system-failure-analyzer
 - tool-stack-designer-for-nontech
