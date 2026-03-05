@@ -40,14 +40,18 @@ See `zo-teacher-os/README.md` for full documentation and setup guide.
 - evidence-calibrator
 - evidence-weight-calculator
 - experiment-designer
+- ethical-impact-evaluator
 - fixpoint
 - information-credibility-analyzer
+- knowledge-structure-mapper
 - premortem-register
 - problem-reframer
+- research-method-advisor
 - reputation-modeler
 - scenario-comparison-engine
 - signalforge
 - stakeholder-map
+- system-failure-analyzer
 - tool-stack-designer-for-nontech
 - Arbitrage Detector
 - stickie-zo
