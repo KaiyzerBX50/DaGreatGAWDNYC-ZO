@@ -41,6 +41,7 @@ See `zo-teacher-os/README.md` for full documentation and setup guide.
 - evidence-weight-calculator
 - experiment-designer
 - fixpoint
+- information-credibility-analyzer
 - premortem-register
 - problem-reframer
 - reputation-modeler
