@@ -1,6 +1,6 @@
 ---
 name: constraint-solver
-description: "Generate feasible plans within strict constraints. Trigger on: limited budget, limited time, work with restrictions, optimize within limits."
+description: "Generate feasible plans within strict constraints. Trigger on: limited budget, limited time, resource constraints, optimize within limits, work with restrictions."
 priority: high
 compatibility: Created for Zo Computer
 metadata:
@@ -14,59 +14,70 @@ metadata:
 
 ## Mission
 
-Produce realistic plans that respect strict constraints.
+Create practical solutions when users face strict limitations such as time, money, resources, or skill.
 
 ## Use When
 
-- The user faces limits in time, money, resources, or skills.
-- The user needs a feasible plan.
+- The user mentions budget limits.
+- The user mentions time limits.
+- The user needs a realistic plan within constraints.
 
 ## Avoid When
 
 - The user wants unconstrained brainstorming.
+- The user is choosing between tools only.
 
-## Output Contract
+## Required Output Structure
 
-## 1) Constraints
+## 1) Constraint Identification
 
-List constraints mentioned:
+List all constraints mentioned:
 
-- budget
-- time
-- resources
-- skill limits
+- Budget
+- Time
+- Resources
+- Skills
+- External limitations
 
-Classify each as hard or flexible.
+Classify each as:
 
-## 2) Objective
+- Hard constraint
+- Flexible constraint
 
-Define the user’s goal.
+## 2) Objective Clarification
+
+Define the user’s main goal.
 
 ## 3) Feasible Solution Space
 
-Generate approaches that respect the constraints.
+Generate possible approaches that respect the constraints.
 
 ## 4) Solution Comparison
 
-Evaluate each option:
+Evaluate each solution on:
 
-- feasibility
-- cost
-- risk
-- expected outcome
+- Feasibility
+- Cost
+- Risk
+- Expected outcome
 
 ## 5) Optimized Plan
 
-Provide the best plan with step-by-step actions.
+Provide the most viable plan with clear steps.
 
 ## 6) Constraint Relaxation Scenarios
 
-Explain how solutions change if constraints loosen.
+Explain how solutions change if:
+
+- budget increases
+- time increases
+- resources expand
 
 ## 7) Confidence and Tipping Variables
 
-- Confidence: low | medium | high
-- Tipping variables: constraints that most affect the solution
+Confidence: low | medium | high
+
+Tipping variables: constraints most likely to change the plan.
 
 ## Quality Rules
 
