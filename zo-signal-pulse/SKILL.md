@@ -78,6 +78,20 @@ cat /home/workspace/meeting-notes.md | bun /home/workspace/Skills/zo-signal-puls
 - Bun runtime available on Zo
 - `ZO_CLIENT_IDENTITY_TOKEN` environment variable (available on Zo)
 
+## Hosted web pages (zo.space)
+
+- Public prompt generator (no AI runs): https://dagawdnyc.zo.space/signal-pulse
+- Private runner (runs AI and saves files): https://dagawdnyc.zo.space/signal-pulse-private
+
+### Private runner setup (your own key)
+
+The private runner spends credits because it runs AI on your Zo. Set your own secrets in Zo:
+
+- `ZO_API_KEY`: Create a Zo access token in Settings > Advanced > Access Tokens, then save it as secret `ZO_API_KEY`.
+- `SIGNAL_PULSE_PASSCODE`: Create a long passcode and save it as secret `SIGNAL_PULSE_PASSCODE`.
+
+Never use someone else’s `ZO_API_KEY`.
+
 ## Notes on scoring
 
 This skill computes scores deterministically from extracted signals. If you want the scoring rules to match a specific rubric you wrote, put the full rubric text into this skill (or provide it in chat) and update the scoring block in `scripts/pulse.ts`.

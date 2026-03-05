@@ -1,57 +1,22 @@
 import { useEffect, useMemo, useRef, useState } from "react";
 import {
-  Activity,
-  AlertTriangle,
-  CheckCircle2,
-  ChevronDown,
+  ArrowUpRight,
   ClipboardCopy,
   Download,
   FileText,
-  Home,
-  Lock,
-  Loader2,
-  Search,
   Sparkles,
-  SlidersHorizontal,
   Tag,
   Users,
   Wand,
   X,
 } from "lucide-react";
 
-type ApiResponse = {
-  report?: string;
-  error?: string;
-  setup?: string;
-  saved?: { outdir: string; reportPath: string; notesPath: string; runPath: string; signalsPath: string };
-  scores?: { overall: number; grade: string; executionRisk: string; accountability: number; clarity: number; risk: number };
-  metrics?: Record<string, any>;
-  raw?: string;
-};
-
-type Health = {
-  ok: boolean;
-  server_time_iso: string;
-  has_zo_api_key: boolean;
-  zo_api_key_length: number;
-  has_passcode: boolean;
-  has_passcode_key: boolean;
-  passcode_length: number;
-};
-
 function clamp(n: number, a: number, b: number) {
   return Math.max(a, Math.min(b, n));
 }
 
-function scoreColor(score: number) {
-  if (score >= 85) return "from-emerald-400 to-cyan-400";
-  if (score >= 70) return "from-cyan-400 to-blue-400";
-  if (score >= 55) return "from-amber-300 to-orange-400";
-  return "from-rose-400 to-pink-500";
-}
-
 function downloadText(filename: string, text: string) {
-  const blob = new Blob([text], { type: "text/markdown;charset=utf-8" });
+  const blob = new Blob([text], { type: "text/plain;charset=utf-8" });
   const url = URL.createObjectURL(blob);
   const a = document.createElement("a");
   a.href = url;
@@ -271,13 +236,7 @@ function WarpSpeedBackground({ intensity = 0.62, density = 0.58, trail = 0.74 }:
   );
 }
 
-function GlassCard({
-  children,
-  className = "",
-}: {
-  children: React.ReactNode;
-  className?: string;
-}) {
+function GlassCard({ children, className = "" }: { children: React.ReactNode; className?: string }) {
   return (
     <div
       className={
@@ -298,140 +257,101 @@ function GlassCard({
   );
 }
 
-function ScoreRing({ score, label }: { score: number; label: string }) {
-  const s = clamp(Math.round(score), 0, 100);
-  const deg = (s / 100) * 360;
-  return (
-    <div className="flex items-center gap-4">
-      <div
-        className="relative h-20 w-20 rounded-full p-[2px]"
-        style={{ background: `conic-gradient(from 270deg, rgba(34,211,238,0.95) ${deg}deg, rgba(255,255,255,0.08) 0deg)` }}
-      >
-        <div className="h-full w-full rounded-full bg-zinc-950/70 backdrop-blur-xl border border-white/10 flex items-center justify-center">
-          <div className="text-center">
-            <div className="text-xl font-semibold text-white leading-none">{s}</div>
-            <div className="text-[10px] text-zinc-400">/100</div>
-          </div>
-        </div>
-      </div>
-      <div>
-        <div className="text-sm text-zinc-400">{label}</div>
-        <div className={"text-lg font-semibold bg-gradient-to-r bg-clip-text text-transparent " + scoreColor(s)}>{s >= 85 ? "Elite" : s >= 70 ? "Strong" : s >= 55 ? "Needs focus" : "At risk"}</div>
-      </div>
-    </div>
-  );
+const exampleNotes = `Weekly Team Sync\n\nUpdates\n- Alex: shipped billing fix, needs review\n- Blair: onboarding doc draft\n\nAction items\n- Assign owner for Q2 roadmap doc\n- Decide deadline for onboarding doc review\n\nRisks\n- Release timeline unclear\n- External dependency on vendor API\n`;
+
+function buildPrompt(args: { notes: string; team: string; meetingType: string; runName: string; tone: string }) {
+  const teamLine = args.team.trim()
+    ? `Team members list (owners must be chosen from this list if possible): ${args.team.trim()}`
+    : "No team list provided.";
+
+  return [
+    "ROLE",
+    "You are Zo Signal Pulse, an execution intelligence analyst.",
+    "",
+    "TASK",
+    "Analyze the meeting notes and produce an execution report with a score.",
+    "",
+    "RULES",
+    "- Do not invent names, dates, owners, or decisions. If missing, say so.",
+    "- If an owner is not explicitly stated, mark it as Unassigned.",
+    "- If a deadline is not explicitly stated, mark it as Not specified.",
+    "- Be specific and operational. Avoid generic advice.",
+    "",
+    "SCORING (0 to 100)",
+    "Compute these counts from your extracted action items and decisions:",
+    "- unassigned_tasks: number of action items with Unassigned owner",
+    "- tasks_missing_deadline: number of action items with Not specified deadline",
+    "- low_clarity_tasks: number of action items whose wording is vague (example: 'look into', 'discuss', 'sync', no clear deliverable)",
+    "- unclear_decisions: number of decisions that are ambiguous or not final",
+    "- open_questions: number of open questions that block progress",
+    "- blockers: number of high severity blockers/risks",
+    "- high_priority_missing_deadline: number of High priority action items missing a deadline",
+    "",
+    "Then compute:",
+    "accountability = clamp(100 - unassigned_tasks*12 - tasks_missing_deadline*6, 0, 100)",
+    "clarity = clamp(100 - low_clarity_tasks*10 - unclear_decisions*8 - open_questions*4, 0, 100)",
+    "risk = clamp(100 - blockers*18 - high_priority_missing_deadline*14, 0, 100)",
+    "overall = round(0.35*accountability + 0.35*clarity + 0.30*risk)",
+    "grade: A if overall>=90, B if >=80, C if >=70, D if >=60, else F",
+    "Execution Risk Level:",
+    "- High if unassigned_tasks>=3 OR high_priority_missing_deadline>=1 OR (blockers>=1 AND you see at least one high priority item)",
+    "- Medium if not High and any of: unassigned_tasks>=1 OR blockers>=1 OR tasks_missing_deadline>=2 OR low_clarity_tasks>=2",
+    "- Low otherwise",
+    "",
+    "OUTPUT FORMAT (Markdown)",
+    "1) Pulse Snapshot (use the labels below, each on its own line)",
+    "Meeting Type:",
+    "Run Name:",
+    "Priority Breakdown:",
+    "Action Items:",
+    "Decisions:",
+    "Blockers/Risks:",
+    "Dependencies:",
+    "Unassigned Tasks:",
+    "Missing Deadline:",
+    "Low Clarity Tasks:",
+    "Execution Risk Level:",
+    "Meeting Effectiveness Score: X/100",
+    "Meeting Grade:",
+    "2 to 4 sentence explanation of grade.",
+    "Behavioral Pulse Note aligned with grade.",
+    "Add improvement challenge line exactly:",
+    "Run Zo Signal Pulse after your next meeting and aim to raise your score by at least 10 points.",
+    "",
+    "9) Signal Strengthening Actions (concrete, operational, specific to your extracted tasks)",
+    "",
+    "10) Follow Up Message Draft (ready to send; reinforce ownership, clarify deadlines, highlight risks, prompt confirmation)",
+    "",
+    `Tone: ${args.tone}`,
+    teamLine,
+    `Meeting type hint: ${args.meetingType || "Meeting"}`,
+    `Run name: ${args.runName || "(none)"}`,
+    "",
+    "MEETING NOTES",
+    args.notes.trim(),
+  ].join("\n");
 }
 
-function Meter({ label, value }: { label: string; value: number }) {
-  const v = clamp(Math.round(value), 0, 100);
-  return (
-    <div className="grid gap-2">
-      <div className="flex items-center justify-between text-xs">
-        <span className="text-zinc-400">{label}</span>
-        <span className="text-zinc-200 tabular-nums">{v}</span>
-      </div>
-      <div className="h-2 rounded-full bg-white/10 overflow-hidden">
-        <div className={"h-full rounded-full bg-gradient-to-r " + scoreColor(v)} style={{ width: v + "%" }} />
-      </div>
-    </div>
-  );
-}
-
-const exampleNotes = `Weekly Team Sync
-
-Updates
-- Alex: shipped billing fix, needs review
-- Blair: onboarding doc draft
-
-Action items
-- Assign owner for Q2 roadmap doc
-- Decide deadline for onboarding doc review
-
-Risks
-- Release timeline unclear
-- External dependency on vendor API
-`;
-
-export default function SignalPulsePage() {
+export default function SignalPulsePublicPromptPage() {
   const [notes, setNotes] = useState("");
   const [team, setTeam] = useState("");
   const [meetingType, setMeetingType] = useState("Weekly team sync");
   const [runName, setRunName] = useState("Weekly report");
   const [tone, setTone] = useState("Structured professional");
-  const [passcode, setPasscode] = useState("");
-  const [showPasscode, setShowPasscode] = useState(false);
-  const [loading, setLoading] = useState(false);
-  const [resp, setResp] = useState<ApiResponse | null>(null);
-  const [health, setHealth] = useState<Health | null>(null);
+  const [prompt, setPrompt] = useState("");
   const [copyOk, setCopyOk] = useState<null | boolean>(null);
 
-  const reportDownloadName = useMemo(() => {
-    const p = resp?.saved?.reportPath;
-    if (!p) return "signal-pulse-report.md";
-    const last = p.split("/").pop();
-    return last || "signal-pulse-report.md";
-  }, [resp?.saved?.reportPath]);
-
-  const scoreLine = useMemo(() => {
-    if (!resp?.scores) return null;
-    const s = resp.scores;
-    return `${s.overall}/100 (${s.grade}) · Risk: ${s.executionRisk}`;
-  }, [resp]);
+  const ZO_INVITE_URL = "https://zo.computer?referrer=dagawdnyc";
 
   const notesCount = useMemo(() => notes.trim().length, [notes]);
 
-  useEffect(() => {
-    let cancelled = false;
-    (async () => {
-      try {
-        const r = await fetch("/api/signal-pulse-health", { headers: { Accept: "application/json" } });
-        const data = (await r.json()) as Health;
-        if (!cancelled) setHealth(data);
-      } catch {
-        if (!cancelled) setHealth(null);
-      }
-    })();
-    return () => {
-      cancelled = true;
-    };
-  }, []);
-
-  async function run() {
-    setLoading(true);
-    setResp(null);
-    setCopyOk(null);
-
-    try {
-      const r = await fetch("/api/signal-pulse", {
-        method: "POST",
-        headers: { "Content-Type": "application/json", Accept: "application/json" },
-        body: JSON.stringify({ notes, team, meeting_type: meetingType, run_name: runName, tone, passcode }),
-      });
-      const data = (await r.json()) as ApiResponse;
-      setResp(data);
-    } catch (e: any) {
-      setResp({ error: e?.message || String(e) });
-    } finally {
-      setLoading(false);
-    }
-  }
+  const downloadName = useMemo(() => {
+    const safe = (runName || "signal-pulse").toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-+/, "").replace(/-+$/, "").slice(0, 48);
+    return `${safe || "signal-pulse"}-prompt.txt`;
+  }, [runName]);
 
   return (
     <div className="relative min-h-screen overflow-hidden bg-gradient-to-b from-zinc-900 via-zinc-900 to-zinc-950">
-      <style>{`
-        @keyframes pulse-glow {
-          0%, 100% {
-            text-shadow: 0 0 10px rgba(34, 211, 238, 0.5), 0 0 20px rgba(59, 130, 246, 0.3);
-          }
-          50% {
-            text-shadow: 0 0 20px rgba(34, 211, 238, 0.8), 0 0 40px rgba(59, 130, 246, 0.6);
-          }
-        }
-        .pulse-title {
-          animation: pulse-glow 3s ease-in-out infinite;
-        }
-      `}</style>
-
       <div className="fixed inset-0 -z-10">
         <WarpSpeedBackground />
         <div className="absolute inset-0 bg-zinc-950/35" />
@@ -479,44 +399,79 @@ export default function SignalPulsePage() {
           );
           mix-blend-mode: overlay;
         }
-        @keyframes fadeUp {
-          0% { opacity: 0; transform: translateY(10px); }
-          100% { opacity: 1; transform: translateY(0); }
-        }
-        .fade-up { animation: fadeUp 260ms ease; }
         @media (prefers-reduced-motion: reduce) {
           .warp-canvas { display: none; }
           .blob1, .blob2 { animation: none !important; }
-          .fade-up { animation: none !important; }
         }
       `}</style>
 
       <div className="relative z-10 mx-auto max-w-6xl px-6 py-10">
         <div className="flex flex-col items-center gap-6 text-center mb-12">
           <div>
-            <h1 className="text-4xl font-bold bg-gradient-to-r from-cyan-400 via-blue-400 to-blue-500 bg-clip-text text-transparent pulse-title">
+            <div className="inline-flex items-center gap-2 rounded-full border border-white/10 bg-zinc-950/35 px-3 py-1 text-xs text-zinc-200">
+              <Sparkles className="h-3.5 w-3.5 text-cyan-300" />
+              Public prompt generator
+            </div>
+            <h1 className="mt-3 text-4xl font-bold bg-gradient-to-r from-cyan-400 via-blue-400 to-blue-500 bg-clip-text text-transparent">
               Zo Signal Pulse
             </h1>
             <p className="mt-3 text-lg text-zinc-300/80 max-w-2xl mx-auto">
-              Turn meeting notes into clear ownership
+              Turn meeting notes into a ready-to-run prompt for your AI app. Paste notes, generate, then copy.
             </p>
-            <p className="mt-2 text-sm text-zinc-400">
-              Paste notes, run the analysis, and get action items, risks, and a score you can track.
+            <p className="mt-2 text-xs text-zinc-500 max-w-2xl mx-auto">
+              This page does not run AI. It only formats your text into a structured prompt.
             </p>
-          </div>
 
-          <div className="flex items-center gap-3">
-            <a href="/" className="rounded-xl border border-white/10 bg-zinc-950/35 px-4 py-2 text-sm text-zinc-200 hover:border-white/20 hover:bg-zinc-950/55 transition-colors backdrop-blur">
-              Home
-            </a>
-            <a
-              href="/api/signal-pulse-health"
-              target="_blank"
-              rel="noopener noreferrer"
-              className="rounded-xl border border-white/10 bg-zinc-950/35 px-4 py-2 text-sm text-zinc-200 hover:border-white/20 hover:bg-zinc-950/55 transition-colors backdrop-blur"
-            >
-              Health
-            </a>
+            <div className="mt-5 grid grid-cols-1 sm:grid-cols-3 gap-3 max-w-3xl mx-auto">
+              <div className="rounded-2xl border border-white/10 bg-zinc-950/30 px-4 py-3 text-left">
+                <div className="text-xs font-semibold uppercase text-zinc-400">Step 1</div>
+                <div className="mt-1 text-sm text-zinc-200">Paste your notes</div>
+                <div className="mt-1 text-xs text-zinc-400">Bullets work best. Include owners and deadlines if you have them.</div>
+              </div>
+              <div className="rounded-2xl border border-white/10 bg-zinc-950/30 px-4 py-3 text-left">
+                <div className="text-xs font-semibold uppercase text-zinc-400">Step 2</div>
+                <div className="mt-1 text-sm text-zinc-200">Generate the prompt</div>
+                <div className="mt-1 text-xs text-zinc-400">We format your notes into a strict analysis prompt.</div>
+              </div>
+              <div className="rounded-2xl border border-white/10 bg-zinc-950/30 px-4 py-3 text-left">
+                <div className="text-xs font-semibold uppercase text-zinc-400">Step 3</div>
+                <div className="mt-1 text-sm text-zinc-200">Run it where you want</div>
+                <div className="mt-1 text-xs text-zinc-400">Paste into ChatGPT, Claude, Gemini, or run the private version on Zo.</div>
+              </div>
+            </div>
+
+            <div className="mt-5 max-w-3xl mx-auto">
+              <GlassCard className="p-4 text-left">
+                <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
+                  <div className="min-w-0">
+                    <div className="text-sm font-medium text-zinc-100">Want AI with 1 click runs and saved outputs?</div>
+                    <div className="mt-1 text-xs text-zinc-400">
+                      Create on Zo. In your private Zo, Signal Pulse runs AI using your Zo API key.
+                    </div>
+                  </div>
+                  <div className="flex items-center gap-4">
+                    <a
+                      href={ZO_INVITE_URL}
+                      target="_blank"
+                      rel="noreferrer"
+                      className="inline-flex items-center justify-center gap-2 rounded-2xl px-4 py-2.5 text-sm font-medium text-white bg-emerald-600/90 hover:bg-emerald-500 transition-colors shadow-[0_0_0_1px_rgba(255,255,255,0.10)_inset]"
+                    >
+                      Create on Zo
+                      <ArrowUpRight className="h-4 w-4" />
+                    </a>
+                    <span className="hidden sm:inline text-zinc-700">•</span>
+                    <a
+                      href={ZO_INVITE_URL}
+                      target="_blank"
+                      rel="noreferrer"
+                      className="whitespace-nowrap text-xs text-zinc-400 hover:text-zinc-200 underline underline-offset-4"
+                    >
+                      What’s Zo?
+                    </a>
+                  </div>
+                </div>
+              </GlassCard>
+            </div>
           </div>
         </div>
 
@@ -528,7 +483,7 @@ export default function SignalPulsePage() {
                   <FileText className="h-4 w-4 text-cyan-300" />
                   <div className="text-sm font-medium text-zinc-100">Input</div>
                 </div>
-                <div className="mt-1 text-xs text-zinc-400">Step 1: paste notes. Step 2: run. Step 3: review.</div>
+                <div className="mt-1 text-xs text-zinc-400">Paste notes, then generate a prompt.</div>
               </div>
               <div className="flex items-center gap-2">
                 <button
@@ -543,7 +498,7 @@ export default function SignalPulsePage() {
                   type="button"
                   onClick={() => {
                     setNotes("");
-                    setResp(null);
+                    setPrompt("");
                     setCopyOk(null);
                   }}
                   className="inline-flex items-center gap-2 rounded-xl border border-white/10 bg-zinc-950/35 px-3 py-2 text-xs text-zinc-200 hover:border-white/20 hover:bg-zinc-950/55 transition-colors"
@@ -555,37 +510,6 @@ export default function SignalPulsePage() {
             </div>
 
             <div className="mt-5 grid gap-4">
-              <div className="grid gap-2">
-                <label className="text-xs text-zinc-400">Passcode (optional)</label>
-                <div className="flex items-center gap-2">
-                  <button
-                    type="button"
-                    onClick={() => setShowPasscode((v) => !v)}
-                    className={
-                      "inline-flex items-center gap-2 rounded-xl border px-3 py-2 text-xs transition-colors " +
-                      (showPasscode ? "border-cyan-400/30 bg-cyan-500/10 text-cyan-200" : "border-white/10 bg-zinc-950/35 text-zinc-200 hover:border-white/20")
-                    }
-                    title="Show passcode field"
-                  >
-                    <Lock className="h-4 w-4" />
-                    {showPasscode ? "Enabled" : "Off"}
-                  </button>
-                  <div className="text-xs text-zinc-500">
-                    {health?.has_passcode ? "Server passcode is set" : "Use if your server has a passcode"}
-                  </div>
-                </div>
-                {showPasscode ? (
-                  <input
-                    value={passcode}
-                    onChange={(e) => setPasscode(e.target.value)}
-                    className="mt-2 w-full rounded-xl bg-zinc-950/35 px-3 py-2 text-sm outline-none ring-1 ring-white/10 focus:ring-cyan-400/40"
-                    placeholder="Enter passcode"
-                    type="password"
-                    autoComplete="off"
-                  />
-                ) : null}
-              </div>
-
               <div className="flex justify-center">
                 <div className="flex gap-4">
                   <div className="grid gap-2 w-40">
@@ -611,24 +535,19 @@ export default function SignalPulsePage() {
                   </div>
                   <div className="grid gap-2 w-40">
                     <label className="text-xs font-semibold uppercase text-zinc-400 text-center">Tone</label>
-                    <div className="relative w-full">
-                      <Sparkles className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-zinc-500" />
-                      <select
-                        value={tone}
-                        onChange={(e) => setTone(e.target.value)}
-                        className="block w-full h-11 appearance-none rounded-xl bg-zinc-950/35 pl-10 pr-10 py-2 text-sm outline-none ring-1 ring-white/10 focus:ring-cyan-400/40 truncate"
-                      >
-                        <option>Structured professional</option>
-                        <option>Executive concise</option>
-                        <option>Friendly direct</option>
-                        <option>Firm accountability</option>
-                      </select>
-                      <ChevronDown className="pointer-events-none absolute right-3 top-1/2 -translate-y-1/2 h-4 w-4 text-zinc-500" />
-                    </div>
+                    <select
+                      value={tone}
+                      onChange={(e) => setTone(e.target.value)}
+                      className="block w-full h-11 appearance-none rounded-xl bg-zinc-950/35 px-3 py-2 text-sm outline-none ring-1 ring-white/10 focus:ring-cyan-400/40"
+                    >
+                      <option>Structured professional</option>
+                      <option>Executive concise</option>
+                      <option>Friendly direct</option>
+                      <option>Firm accountability</option>
+                    </select>
                   </div>
                 </div>
               </div>
-              <div className="text-[11px] text-zinc-500">Run name is used for folder and filenames. Saved under Files/Signal Pulse.</div>
 
               <div className="flex justify-center gap-4">
                 <div className="grid gap-2 min-w-0">
@@ -661,153 +580,68 @@ export default function SignalPulsePage() {
 
               <div className="flex flex-wrap items-center gap-3">
                 <button
-                  onClick={run}
-                  disabled={loading || !notes.trim()}
+                  onClick={() => {
+                    const p = buildPrompt({ notes, team, meetingType, runName, tone });
+                    setPrompt(p);
+                    setCopyOk(null);
+                  }}
+                  disabled={!notes.trim()}
                   className={
                     "inline-flex items-center gap-2 rounded-2xl px-4 py-2.5 text-sm font-medium text-white transition-all " +
-                    (loading || !notes.trim()
+                    (!notes.trim()
                       ? "bg-white/10 opacity-60"
                       : "bg-gradient-to-r from-cyan-500 to-blue-600 hover:from-cyan-400 hover:to-blue-500 shadow-[0_0_0_1px_rgba(255,255,255,0.08)_inset,0_18px_50px_rgba(34,211,238,0.18)]")
                   }
                 >
-                  {loading ? <Loader2 className="h-4 w-4 animate-spin" /> : <Sparkles className="h-4 w-4" />}
-                  {loading ? "Running" : "Run Signal Pulse"}
+                  <Sparkles className="h-4 w-4" />
+                  Generate prompt
                 </button>
-                {scoreLine ? <div className="text-sm text-zinc-200 fade-up">{scoreLine}</div> : null}
-              </div>
-
-              <div className="text-[11px] text-zinc-500">
-                Keep sensitive notes out of public links. If you share this page, enable a server passcode.
               </div>
             </div>
           </GlassCard>
 
           <div className="grid gap-6">
             <GlassCard className="p-5">
-              <div className="flex items-start justify-between gap-4">
-                <div>
-                  <div className="flex items-center gap-2">
-                    <Activity className="h-4 w-4 text-cyan-300" />
-                    <div className="text-sm font-medium text-zinc-100">Status</div>
-                  </div>
-                  <div className="mt-1 text-xs text-zinc-400">Backend readiness and score preview.</div>
-                </div>
+              <div className="text-sm font-medium text-zinc-100">Prompt</div>
+              <div className="mt-2 text-xs text-zinc-400">Copy and paste into ChatGPT, Claude, Gemini, or whatever you use.</div>
+
+              <div className="mt-4 flex items-center gap-2">
+                <button
+                  onClick={async () => {
+                    if (!prompt) return;
+                    const ok = await copyToClipboard(prompt);
+                    setCopyOk(ok);
+                    setTimeout(() => setCopyOk(null), 1200);
+                  }}
+                  disabled={!prompt}
+                  className={
+                    "inline-flex items-center gap-2 rounded-xl border px-3 py-2 text-xs transition-colors " +
+                    (!prompt ? "border-white/10 bg-white/5 text-zinc-400" : "border-white/10 bg-zinc-950/35 text-zinc-200 hover:border-white/20 hover:bg-zinc-950/55")
+                  }
+                >
+                  <ClipboardCopy className="h-4 w-4" />
+                  {copyOk === true ? "Copied" : copyOk === false ? "Copy failed" : "Copy"}
+                </button>
+                <button
+                  onClick={() => {
+                    if (!prompt) return;
+                    downloadText(downloadName, prompt);
+                  }}
+                  disabled={!prompt}
+                  className={
+                    "inline-flex items-center gap-2 rounded-xl border px-3 py-2 text-xs transition-colors " +
+                    (!prompt ? "border-white/10 bg-white/5 text-zinc-400" : "border-white/10 bg-zinc-950/35 text-zinc-200 hover:border-white/20 hover:bg-zinc-950/55")
+                  }
+                >
+                  <Download className="h-4 w-4" />
+                  Download
+                </button>
               </div>
 
-              <div className="mt-5 grid gap-4">
-                <div className="flex items-center justify-between rounded-xl border border-white/10 bg-zinc-950/35 px-4 py-3">
-                  <div className="text-sm text-zinc-200">Server</div>
-                  <div className="flex items-center gap-2 text-sm">
-                    {health?.has_zo_api_key ? (
-                      <>
-                        <CheckCircle2 className="h-4 w-4 text-emerald-400" />
-                        <span className="text-emerald-200">Ready</span>
-                      </>
-                    ) : (
-                      <>
-                        <AlertTriangle className="h-4 w-4 text-amber-300" />
-                        <span className="text-amber-200">Needs setup</span>
-                      </>
-                    )}
-                  </div>
-                </div>
-
-                {resp?.scores ? (
-                  <div className="grid gap-4">
-                    <ScoreRing score={resp.scores.overall} label={`Grade ${resp.scores.grade} · Risk ${resp.scores.executionRisk}`} />
-                    <div className="grid gap-3">
-                      <Meter label="Accountability" value={resp.scores.accountability} />
-                      <Meter label="Clarity" value={resp.scores.clarity} />
-                      <Meter label="Risk" value={resp.scores.risk} />
-                    </div>
-                  </div>
-                ) : (
-                  <div className="text-sm text-zinc-400">Run a report to see your score and breakdown.</div>
-                )}
-              </div>
+              <pre className="mt-4 whitespace-pre-wrap rounded-2xl border border-white/10 bg-zinc-950/55 p-4 text-xs leading-relaxed text-zinc-100 shadow-[0_0_0_1px_rgba(255,255,255,0.05)_inset]">
+                {prompt || "Generate a prompt to see it here."}
+              </pre>
             </GlassCard>
-
-            {resp?.error ? (
-              <GlassCard className="p-5 border-rose-500/25">
-                <div className="flex items-start gap-3">
-                  <AlertTriangle className="h-5 w-5 text-rose-300 mt-0.5" />
-                  <div>
-                    <div className="text-sm font-medium text-rose-200">Error</div>
-                    <div className="mt-1 whitespace-pre-wrap text-sm text-rose-100/90">{resp.error}</div>
-                    {resp.setup ? <div className="mt-3 text-xs text-rose-100/80">{resp.setup}</div> : null}
-                    {resp.raw ? (
-                      <details className="mt-3">
-                        <summary className="cursor-pointer text-xs text-zinc-300">Show raw</summary>
-                        <pre className="mt-2 whitespace-pre-wrap text-xs text-zinc-200">{resp.raw}</pre>
-                      </details>
-                    ) : null}
-                  </div>
-                </div>
-              </GlassCard>
-            ) : null}
-
-            {resp?.report ? (
-              <GlassCard className="p-5">
-                <div className="flex flex-wrap items-center justify-between gap-3">
-                  <div>
-                    <div className="text-sm font-medium text-zinc-100">Report</div>
-                    {resp.saved ? <div className="mt-1 text-xs text-zinc-500">Saved to your workspace: {resp.saved.outdir}</div> : null}
-                  </div>
-
-                  <div className="flex items-center gap-2">
-                    <button
-                      onClick={async () => {
-                        const ok = await copyToClipboard(resp.report || "");
-                        setCopyOk(ok);
-                        setTimeout(() => setCopyOk(null), 1200);
-                      }}
-                      className="inline-flex items-center gap-2 rounded-xl border border-white/10 bg-zinc-950/35 px-3 py-2 text-xs text-zinc-200 hover:border-white/20 hover:bg-zinc-950/55 transition-colors"
-                    >
-                      <ClipboardCopy className="h-4 w-4" />
-                      {copyOk === true ? "Copied" : copyOk === false ? "Copy failed" : "Copy"}
-                    </button>
-                    <button
-                      onClick={() => downloadText(reportDownloadName, resp.report || "")}
-                      className="inline-flex items-center gap-2 rounded-xl border border-white/10 bg-zinc-950/35 px-3 py-2 text-xs text-zinc-200 hover:border-white/20 hover:bg-zinc-950/55 transition-colors"
-                    >
-                      <Download className="h-4 w-4" />
-                      Download
-                    </button>
-                  </div>
-                </div>
-
-                <pre className="mt-4 whitespace-pre-wrap rounded-2xl border border-white/10 bg-zinc-950/55 p-4 text-sm leading-relaxed text-zinc-100 shadow-[0_0_0_1px_rgba(255,255,255,0.05)_inset] fade-up">
-                  {resp.report}
-                </pre>
-              </GlassCard>
-            ) : (
-              <GlassCard className="p-5">
-                <div className="text-sm font-medium text-zinc-100">What you get</div>
-                <div className="mt-4 grid gap-3">
-                  <div className="flex items-start gap-3">
-                    <Sparkles className="h-5 w-5 text-purple-300 mt-0.5" />
-                    <div>
-                      <div className="text-sm text-zinc-200">Execution score</div>
-                      <div className="text-xs text-zinc-500">A single number plus breakdown: accountability, clarity, risk.</div>
-                    </div>
-                  </div>
-                  <div className="flex items-start gap-3">
-                    <FileText className="h-5 w-5 text-cyan-300 mt-0.5" />
-                    <div>
-                      <div className="text-sm text-zinc-200">Action items, decisions, blockers</div>
-                      <div className="text-xs text-zinc-500">Structured report you can paste into docs or send as a follow up.</div>
-                    </div>
-                  </div>
-                  <div className="flex items-start gap-3">
-                    <Lock className="h-5 w-5 text-emerald-300 mt-0.5" />
-                    <div>
-                      <div className="text-sm text-zinc-200">Safer sharing</div>
-                      <div className="text-xs text-zinc-500">Enable a server passcode when you want a link for others.</div>
-                    </div>
-                  </div>
-                </div>
-              </GlassCard>
-            )}
           </div>
         </div>
       </div>
