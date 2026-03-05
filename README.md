@@ -45,6 +45,7 @@ See `zo-teacher-os/README.md` for full documentation and setup guide.
 - fixpoint
 - premortem-register
 - reputation-modeler
+- scenario-comparison-engine
 - signalforge
 - stakeholder-map
 - tool-stack-designer-for-nontech
