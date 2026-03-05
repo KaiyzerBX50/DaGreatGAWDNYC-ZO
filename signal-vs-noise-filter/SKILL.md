@@ -1,6 +1,6 @@
 ---
 name: signal-vs-noise-filter
-description: "Identify meaningful insights in large or messy information. Trigger on: extract insights, filter signal from noise, analyze large information set."
+description: "Identify meaningful insights in large information sets. Trigger on: filter signal from noise, identify key insights."
 priority: high
 compatibility: Created for Zo Computer
 metadata:
@@ -27,7 +27,7 @@ Distinguish important information from irrelevant noise.
 
 ## Output Contract
 
-## 1) Information Overview
+## 1) Information Summary
 
 Brief description of the input material.
 

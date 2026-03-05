@@ -65,6 +65,14 @@ See `zo-teacher-os/README.md` for full documentation and setup guide.
 - zo-signal-pulse
 - zo-space
 - zo-teacher-os
+- misinformation-pattern-detector
+- learning-path-architect
+- negotiation-strategy-designer
+- risk-scenario-simulator
+- stakeholder-incentive-analyzer
+- complexity-simplifier
+- argument-rebuilder
+- research-question-generator
 
 ## Folder layout
 

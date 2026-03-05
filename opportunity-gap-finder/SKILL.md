@@ -1,6 +1,6 @@
 ---
 name: opportunity-gap-finder
-description: "Identify underserved opportunities in markets, skills, research, or products. Trigger on: find opportunities, identify gaps, underserved markets."
+description: "Identify underserved opportunities in markets, skills, research, or products. Trigger on: find opportunities, identify gaps, uncover underserved markets."
 priority: high
 compatibility: Created for Zo Computer
 metadata:
@@ -31,7 +31,7 @@ Identify opportunity gaps where demand exceeds supply.
 
 Describe the domain being analyzed.
 
-## 2) Existing Solutions
+## 2) Current Solutions
 
 Summarize current offerings.
 
@@ -57,11 +57,7 @@ Evaluate:
 - timing
 - distribution or go-to-market constraints
 
-## 6) Strategic Recommendations
-
-Suggest the most promising opportunities.
-
-## 7) Confidence and Tipping Variables
+## 6) Confidence and Tipping Variables
 
 - Confidence: low | medium | high
 - Tipping variables: factors that could significantly change the opportunity landscape
