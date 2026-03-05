@@ -42,6 +42,7 @@ See `zo-teacher-os/README.md` for full documentation and setup guide.
 - experiment-designer
 - fixpoint
 - premortem-register
+- problem-reframer
 - reputation-modeler
 - scenario-comparison-engine
 - signalforge
