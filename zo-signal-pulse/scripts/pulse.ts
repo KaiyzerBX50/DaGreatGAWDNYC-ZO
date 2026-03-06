@@ -243,7 +243,7 @@ async function zoAsk(prompt: string) {
     },
     body: JSON.stringify({
       input: prompt,
-      model_name: "openai:gpt-5.2-2025-12-11",
+      model_name: "vercel:zai/glm-5",
     }),
   });
 
