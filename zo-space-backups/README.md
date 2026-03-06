@@ -12,12 +12,15 @@ The `/cyber` page is backed up. To restore or view the full source code:
 ### Recent Updates (2026-03-06)
 
 **Fixed Issues:**
-1. **Expand Buttons** - Added fullscreen modal for Ops Theater when clicking Expand
+1. **Expand Buttons** - Each panel now has its own expand modal
+   - War Room Grid expands to show heatmap in larger view
+   - Ops Theater expands to show world map with animated arcs
 2. **War Room Grid** - Removed overflow scrolling, adjusted column sizing for better display
 3. **Tips Section** - Restored all three tips that were missing
 
 **New Features:**
-- Fullscreen Ops Theater modal with close button (X icon)
+- Fullscreen War Room Grid modal with larger cells and click-to-filter
+- Fullscreen Ops Theater modal with animated threat arcs
 - Maximize icon added to Expand buttons
 - Better SVG sizing for the world map visualization
 
