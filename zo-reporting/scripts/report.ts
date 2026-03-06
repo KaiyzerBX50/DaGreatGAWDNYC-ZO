@@ -5,6 +5,9 @@
  * Outputs PLAIN TEXT format for mobile/email readability
  * 
  * Usage: bun run report.ts
+ * 
+ * Sources: X, Reddit, Instagram, LinkedIn, TikTok, YouTube, Discord, 
+ *          Hacker News, GitHub, Product Hunt, Dev.to, Indie Hackers
  */
 
 const SEARCH_TERMS = [
@@ -134,6 +137,275 @@ Output ONLY valid JSON, no other text.`,
   }
 }
 
+async function searchInstagram(query: string): Promise<any[]> {
+  const response = await fetch("https://api.zo.computer/zo/ask", {
+    method: "POST",
+    headers: {
+      "authorization": process.env.ZO_CLIENT_IDENTITY_TOKEN || "",
+      "content-type": "application/json",
+    },
+    body: JSON.stringify({
+      input: `Search Instagram for: "${query}"
+
+Use web_search with include_domains=["instagram.com"]. Return results as a JSON array with objects containing:
+- title: string (caption text, truncated)
+- url: string
+- date: string
+- author: string (handle)
+- engagement: string (likes/comments if shown)
+- sentiment: string
+
+Limit to 10 results.
+
+Output ONLY valid JSON, no other text.`,
+      model_name: "openrouter:z-ai/glm-5",
+    }),
+  });
+
+  const result = await response.json();
+  try {
+    return JSON.parse(result.output);
+  } catch {
+    return [];
+  }
+}
+
+async function searchLinkedIn(query: string): Promise<any[]> {
+  const response = await fetch("https://api.zo.computer/zo/ask", {
+    method: "POST",
+    headers: {
+      "authorization": process.env.ZO_CLIENT_IDENTITY_TOKEN || "",
+      "content-type": "application/json",
+    },
+    body: JSON.stringify({
+      input: `Search LinkedIn for: "${query}"
+
+Use web_search with include_domains=["linkedin.com"]. Return results as a JSON array with objects containing:
+- title: string
+- url: string
+- date: string
+- author: string
+- excerpt: string
+- type: string (post, article, company page)
+- sentiment: string
+
+Limit to 10 results.
+
+Output ONLY valid JSON, no other text.`,
+      model_name: "openrouter:z-ai/glm-5",
+    }),
+  });
+
+  const result = await response.json();
+  try {
+    return JSON.parse(result.output);
+  } catch {
+    return [];
+  }
+}
+
+async function searchTikTok(query: string): Promise<any[]> {
+  const response = await fetch("https://api.zo.computer/zo/ask", {
+    method: "POST",
+    headers: {
+      "authorization": process.env.ZO_CLIENT_IDENTITY_TOKEN || "",
+      "content-type": "application/json",
+    },
+    body: JSON.stringify({
+      input: `Search TikTok for: "${query}"
+
+Use web_search with include_domains=["tiktok.com"]. Return results as a JSON array with objects containing:
+- title: string (video description)
+- url: string
+- date: string
+- author: string (handle)
+- engagement: string (views/likes)
+- sentiment: string
+
+Limit to 10 results.
+
+Output ONLY valid JSON, no other text.`,
+      model_name: "openrouter:z-ai/glm-5",
+    }),
+  });
+
+  const result = await response.json();
+  try {
+    return JSON.parse(result.output);
+  } catch {
+    return [];
+  }
+}
+
+async function searchYouTube(query: string): Promise<any[]> {
+  const response = await fetch("https://api.zo.computer/zo/ask", {
+    method: "POST",
+    headers: {
+      "authorization": process.env.ZO_CLIENT_IDENTITY_TOKEN || "",
+      "content-type": "application/json",
+    },
+    body: JSON.stringify({
+      input: `Search YouTube for: "${query}"
+
+Use web_search with include_domains=["youtube.com"]. Return results as a JSON array with objects containing:
+- title: string
+- url: string
+- date: string
+- author: string (channel name)
+- engagement: string (views)
+- excerpt: string (description snippet)
+- sentiment: string
+
+Limit to 10 results.
+
+Output ONLY valid JSON, no other text.`,
+      model_name: "openrouter:z-ai/glm-5",
+    }),
+  });
+
+  const result = await response.json();
+  try {
+    return JSON.parse(result.output);
+  } catch {
+    return [];
+  }
+}
+
+async function searchDiscord(query: string): Promise<any[]> {
+  const response = await fetch("https://api.zo.computer/zo/ask", {
+    method: "POST",
+    headers: {
+      "authorization": process.env.ZO_CLIENT_IDENTITY_TOKEN || "",
+      "content-type": "application/json",
+    },
+    body: JSON.stringify({
+      input: `Search for Discord mentions of: "${query}"
+
+Use web_search. Return results as a JSON array with objects containing:
+- title: string
+- url: string
+- date: string
+- server: string (if identifiable)
+- excerpt: string
+- sentiment: string
+
+Limit to 5 results.
+
+Output ONLY valid JSON, no other text.`,
+      model_name: "openrouter:z-ai/glm-5",
+    }),
+  });
+
+  const result = await response.json();
+  try {
+    return JSON.parse(result.output);
+  } catch {
+    return [];
+  }
+}
+
+async function searchProductHunt(query: string): Promise<any[]> {
+  const response = await fetch("https://api.zo.computer/zo/ask", {
+    method: "POST",
+    headers: {
+      "authorization": process.env.ZO_CLIENT_IDENTITY_TOKEN || "",
+      "content-type": "application/json",
+    },
+    body: JSON.stringify({
+      input: `Search Product Hunt for: "${query}"
+
+Use web_search with include_domains=["producthunt.com"]. Return results as a JSON array with objects containing:
+- title: string
+- url: string
+- date: string
+- author: string (maker)
+- engagement: string (upvotes)
+- excerpt: string (tagline)
+- sentiment: string
+
+Limit to 5 results.
+
+Output ONLY valid JSON, no other text.`,
+      model_name: "openrouter:z-ai/glm-5",
+    }),
+  });
+
+  const result = await response.json();
+  try {
+    return JSON.parse(result.output);
+  } catch {
+    return [];
+  }
+}
+
+async function searchDevTo(query: string): Promise<any[]> {
+  const response = await fetch("https://api.zo.computer/zo/ask", {
+    method: "POST",
+    headers: {
+      "authorization": process.env.ZO_CLIENT_IDENTITY_TOKEN || "",
+      "content-type": "application/json",
+    },
+    body: JSON.stringify({
+      input: `Search Dev.to for: "${query}"
+
+Use web_search with include_domains=["dev.to"]. Return results as a JSON array with objects containing:
+- title: string
+- url: string
+- date: string
+- author: string
+- engagement: string (reactions)
+- excerpt: string
+- sentiment: string
+
+Limit to 5 results.
+
+Output ONLY valid JSON, no other text.`,
+      model_name: "openrouter:z-ai/glm-5",
+    }),
+  });
+
+  const result = await response.json();
+  try {
+    return JSON.parse(result.output);
+  } catch {
+    return [];
+  }
+}
+
+async function searchIndieHackers(query: string): Promise<any[]> {
+  const response = await fetch("https://api.zo.computer/zo/ask", {
+    method: "POST",
+    headers: {
+      "authorization": process.env.ZO_CLIENT_IDENTITY_TOKEN || "",
+      "content-type": "application/json",
+    },
+    body: JSON.stringify({
+      input: `Search Indie Hackers for: "${query}"
+
+Use web_search with include_domains=["indiehackers.com"]. Return results as a JSON array with objects containing:
+- title: string
+- url: string
+- date: string
+- author: string
+- engagement: string (likes/replies)
+- excerpt: string
+- sentiment: string
+
+Limit to 5 results.
+
+Output ONLY valid JSON, no other text.`,
+      model_name: "openrouter:z-ai/glm-5",
+    }),
+  });
+
+  const result = await response.json();
+  try {
+    return JSON.parse(result.output);
+  } catch {
+    return [];
+  }
+}
+
 async function searchOfficialSources(): Promise<Source[]> {
   const sources: Source[] = [];
 
@@ -167,6 +439,7 @@ async function searchOfficialSources(): Promise<Source[]> {
 async function searchExternalSources(): Promise<Map<string, Source[]>> {
   const mentions = new Map<string, Source[]>();
 
+  // News/Blogs
   const newsResults = await searchWeb(`"Zo Computer" OR "Zo.Computer" -site:zo.computer`);
   mentions.set("News/Blogs", newsResults.slice(0, 10).map(r => ({
     platform: "News",
@@ -177,16 +450,7 @@ async function searchExternalSources(): Promise<Map<string, Source[]>> {
     excerpt: r.excerpt,
   })));
 
-  const redditResults = await searchReddit("Zo Computer OR Zo.Computer");
-  mentions.set("Reddit", redditResults.slice(0, 10).map(r => ({
-    platform: "Reddit",
-    title: r.title,
-    author: r.author,
-    date: r.date,
-    url: r.url,
-    excerpt: r.excerpt,
-  })));
-
+  // X/Twitter
   const xResults = await searchX("Zo Computer OR Zo.Computer -from:zocomputer");
   mentions.set("X", xResults.slice(0, 15).map(r => ({
     platform: "X",
@@ -198,6 +462,75 @@ async function searchExternalSources(): Promise<Map<string, Source[]>> {
     sentiment: r.sentiment,
   })));
 
+  // Reddit
+  const redditResults = await searchReddit("Zo Computer OR Zo.Computer");
+  mentions.set("Reddit", redditResults.slice(0, 10).map(r => ({
+    platform: "Reddit",
+    title: r.title,
+    author: r.author,
+    date: r.date,
+    url: r.url,
+    excerpt: r.excerpt,
+  })));
+
+  // Instagram
+  const igResults = await searchInstagram("zocomputer OR zo.computer");
+  mentions.set("Instagram", igResults.slice(0, 10).map(r => ({
+    platform: "Instagram",
+    title: r.title,
+    author: r.author,
+    date: r.date,
+    url: r.url,
+    engagement: r.engagement,
+    sentiment: r.sentiment,
+  })));
+
+  // LinkedIn
+  const liResults = await searchLinkedIn("Zo Computer OR Zo.Computer");
+  mentions.set("LinkedIn", liResults.slice(0, 10).map(r => ({
+    platform: "LinkedIn",
+    title: r.title,
+    author: r.author,
+    date: r.date,
+    url: r.url,
+    excerpt: r.excerpt,
+  })));
+
+  // TikTok
+  const ttResults = await searchTikTok("zocomputer OR zo computer");
+  mentions.set("TikTok", ttResults.slice(0, 10).map(r => ({
+    platform: "TikTok",
+    title: r.title,
+    author: r.author,
+    date: r.date,
+    url: r.url,
+    engagement: r.engagement,
+    sentiment: r.sentiment,
+  })));
+
+  // YouTube
+  const ytResults = await searchYouTube("Zo Computer OR Zo.Computer");
+  mentions.set("YouTube", ytResults.slice(0, 10).map(r => ({
+    platform: "YouTube",
+    title: r.title,
+    author: r.author,
+    date: r.date,
+    url: r.url,
+    engagement: r.engagement,
+    excerpt: r.excerpt,
+  })));
+
+  // Discord
+  const dcResults = await searchDiscord("Zo Computer OR Zo.Computer");
+  mentions.set("Discord", dcResults.slice(0, 5).map(r => ({
+    platform: "Discord",
+    title: r.title,
+    date: r.date,
+    url: r.url,
+    excerpt: r.excerpt,
+  })));
+
+  // Hacker News
   const hnResults = await searchWeb(`"Zo Computer" site:news.ycombinator.com`);
   mentions.set("Hacker News", hnResults.slice(0, 5).map(r => ({
     platform: "Hacker News",
@@ -208,6 +541,7 @@ async function searchExternalSources(): Promise<Map<string, Source[]>> {
     excerpt: r.excerpt,
   })));
 
+  // GitHub
   const ghResults = await searchWeb(`"zo-computer" OR "zocomputer" site:github.com`);
   mentions.set("GitHub", ghResults.slice(0, 5).map(r => ({
     platform: "GitHub",
@@ -215,6 +549,42 @@ async function searchExternalSources(): Promise<Map<string, Source[]>> {
     author: r.author,
     date: r.date,
     url: r.url,
+    excerpt: r.excerpt,
+  })));
+
+  // Product Hunt
+  const phResults = await searchProductHunt("Zo Computer");
+  mentions.set("Product Hunt", phResults.slice(0, 5).map(r => ({
+    platform: "Product Hunt",
+    title: r.title,
+    author: r.author,
+    date: r.date,
+    url: r.url,
+    engagement: r.engagement,
+    excerpt: r.excerpt,
+  })));
+
+  // Dev.to
+  const devResults = await searchDevTo("Zo Computer");
+  mentions.set("Dev.to", devResults.slice(0, 5).map(r => ({
+    platform: "Dev.to",
+    title: r.title,
+    author: r.author,
+    date: r.date,
+    url: r.url,
+    engagement: r.engagement,
+    excerpt: r.excerpt,
+  })));
+
+  // Indie Hackers
+  const ihResults = await searchIndieHackers("Zo Computer");
+  mentions.set("Indie Hackers", ihResults.slice(0, 5).map(r => ({
+    platform: "Indie Hackers",
+    title: r.title,
+    author: r.author,
+    date: r.date,
+    url: r.url,
+    engagement: r.engagement,
     excerpt: r.excerpt,
   })));
 
@@ -247,6 +617,7 @@ function generateHeadlines(sources: Source[]): Headline[] {
 async function generateReport(): Promise<string> {
   console.error("Starting Zo Computer daily report...");
   console.error(`Time window: ${formatCoverageWindow()}`);
+  console.error("Sources: X, Reddit, Instagram, LinkedIn, TikTok, YouTube, Discord, Hacker News, GitHub, Product Hunt, Dev.to, Indie Hackers");
   
   // Gather sources
   console.error("Searching official sources...");
@@ -271,7 +642,8 @@ async function generateReport(): Promise<string> {
   // Metadata
   report += `Run Time: ${new Date().toLocaleString('en-US', { timeZone: 'America/New_York' })} ET\n`;
   report += `Coverage: ${formatCoverageWindow()}\n`;
-  report += `Sources Found: ${allSources.length}\n\n`;
+  report += `Sources: X, Reddit, Instagram, LinkedIn, TikTok, YouTube, Discord, HN, GitHub, ProductHunt, Dev.to, IndieHackers\n`;
+  report += `Total Mentions Found: ${allSources.length}\n\n`;
   
   // Headlines
   report += `HEADLINES\n`;
@@ -304,27 +676,28 @@ async function generateReport(): Promise<string> {
     report += `No new product releases detected.\n\n`;
   }
   
-  // External Mentions
-  report += `EXTERNAL MENTIONS\n`;
-  report += `-----------------\n`;
+  // External Mentions by Platform
+  report += `EXTERNAL MENTIONS BY PLATFORM\n`;
+  report += `-----------------------------\n`;
   let hasMentions = false;
   for (const [channel, sources] of externalMentions) {
     if (sources.length === 0) continue;
     hasMentions = true;
-    report += `${channel}:\n`;
+    report += `\n${channel} (${sources.length} mentions):\n`;
     for (const s of sources.slice(0, 3)) {
       const title = s.title.length > 60 ? s.title.slice(0, 57) + "..." : s.title;
       report += `  - ${title}\n`;
+      if (s.author) report += `    By: ${s.author}\n`;
+      if (s.engagement) report += `    Engagement: ${s.engagement}\n`;
       report += `    ${s.url}\n`;
     }
-    report += `\n`;
   }
   if (!hasMentions) {
     report += `No external mentions found.\n\n`;
   }
   
   // Trust & Safety
-  report += `TRUST & SAFETY\n`;
+  report += `\nTRUST & SAFETY\n`;
   report += `--------------\n`;
   const scamMentions = allSources.filter(s => 
     s.title.toLowerCase().includes("scam") || 
@@ -340,10 +713,9 @@ async function generateReport(): Promise<string> {
   } else {
     report += `No scams, impersonation, or phishing detected.\n`;
   }
-  report += `\n`;
   
   // Opportunities
-  report += `OPPORTUNITIES\n`;
+  report += `\nOPPORTUNITIES\n`;
   report += `-------------\n`;
   const questions = allSources.filter(s =>
     s.title.includes("?") ||
@@ -359,10 +731,9 @@ async function generateReport(): Promise<string> {
   } else {
     report += `No immediate opportunities identified.\n`;
   }
-  report += `\n`;
   
   // Priority Actions
-  report += `PRIORITY ACTIONS\n`;
+  report += `\nPRIORITY ACTIONS\n`;
   report += `----------------\n`;
   let actionNum = 1;
   if (scamMentions.length > 0) {
@@ -373,14 +744,16 @@ async function generateReport(): Promise<string> {
     report += `${actionNum}. [P1] Update docs for new releases\n`;
     actionNum++;
   }
-  report += `${actionNum}. [P2] Engage with community mentions\n`;
-  report += `\n`;
+  report += `${actionNum}. [P2] Engage with community mentions across platforms\n`;
+  report += `${actionNum + 1}. [P2] Monitor sentiment trends on TikTok and Instagram\n`;
   
   // Watchlist
-  report += `WATCHLIST\n`;
+  report += `\nWATCHLIST\n`;
   report += `---------\n`;
-  report += `Official: zo.computer, @zocomputer\n`;
-  report += `External: reddit/r/selfhosted, news.ycombinator.com\n`;
+  report += `Official: zo.computer, @zocomputer (X), @zo.computer (IG)\n`;
+  report += `Social: reddit/r/selfhosted, news.ycombinator.com, producthunt.com\n`;
+  report += `Video: youtube.com, tiktok.com\n`;
+  report += `Dev: github.com, dev.to, indiehackers.com\n`;
   
   console.error("Report generation complete.");
   return report;

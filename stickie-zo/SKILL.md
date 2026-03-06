@@ -6,11 +6,8 @@ metadata:
   author: dagawdnyc.zo.computer
   display_name: Stickie Zo
   emoji: 🗒️
-  requires:
-    - python3
-  permissions:
-    - filesystem read: notes source path
-    - filesystem write: Space/postits output path
+  permissions: [{"filesystem read":"notes source path"},{"filesystem write":"Space/postits output path"}]
+  requires: ["python3"]
 ---
 # Stickie Zo
 

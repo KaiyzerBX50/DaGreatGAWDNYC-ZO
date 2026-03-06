@@ -48,10 +48,9 @@ bun /home/workspace/Skills/zo-signal-pulse/scripts/pulse.ts \
 
 ### Web interface
 
-1. Go to [zo.space/signal-pulse](https://zo.space/signal-pulse).
-2. Enter your passcode.
-3. Paste your meeting notes into the text box.
-4. Click "Analyze".
+After running the setup script, you'll have a private web interface on your zo.space. The URL will be `https://<your-handle>.zo.space/signal-pulse`.
+
+If you skip the setup, you can always run Signal Pulse from the command line.
 
 ## Inputs
 
