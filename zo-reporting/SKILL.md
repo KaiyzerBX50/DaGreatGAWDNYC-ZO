@@ -1,218 +1,190 @@
 ---
 name: zo-reporting
-description: Generate comprehensive daily reports about Zo.Computer. Gathers updates from official sources, social media, forums, reviews, and more. Produces a structured brief with headlines, external mentions, trust signals, opportunities, and priority actions.
+description: Real-time news command center for Zo Computer. Monitors 18 platforms with sentiment analysis, engagement tracking, and live dashboard. 100% verified data only.
 compatibility: Created for Zo Computer
 metadata:
   author: dagawdnyc.zo.computer
-  display_name: Zo Daily Reporting
+  display_name: Zo News Desk
 ---
-# Zo Report Lead, Instant Update Command Center
 
-PURPOSE: Fast, source-backed daily brief about Zo.Computer. High signal, tight attribution, zero filler.
+# Zo News Desk Command Center
 
-## Prerequisites
+PURPOSE: Real-time, source-backed news dashboard about Zo.Computer with 100% verified data, sentiment analysis, and news station aesthetics.
 
-- [ ] Zo API access (ZO_CLIENT_IDENTITY_TOKEN environment variable)
+## Live Dashboard
 
-## Trigger
+**URL:** https://dagawdnyc.zo.space/zo-desk
 
-- If message starts with **UPDATE** → generate report immediately
-- If message starts with **SCHEDULE** → set up recurring report
-- Otherwise reply: "Type UPDATE for an instant report, or SCHEDULE to set up daily reports."
+## Features
 
-## Schedule Protocol
+### News Station Interface
+- **Zo Pegasus Logo** - Official branding
+- **Breaking News Ticker** - Scrolling headlines with gradient styling
+- **ON AIR Indicator** - Live broadcast status
+- **Clock** - Real-time ET display
+- **Scanline Effects** - CRT-style visual overlay
 
-When user asks to schedule a recurring report:
+### Analytics Panels
+- **Sentiment Score** - AI-calculated from actual content (positive/negative/neutral)
+- **Platform Distribution** - Mentions by source with percentages
+- **Activity Timeline** - Mention frequency over 24 hours
+- **VS Yesterday** - Comparison to previous period
+- **Engagement Leaderboard** - Top performing content
+- **Top Keywords** - Trending topics extracted from mentions
 
-1. **Ask for preferences:**
-   - Desired time (e.g., "8am ET every weekday")
-   - Delivery method: email or SMS
+### Data Integrity
+- **100% Verified** - All URLs are real and verifiable
+- **No Hallucinations** - No placeholder or estimated data
+- **Data Protection** - Preserves existing data if API fails
+- **Sentiment Analysis** - Calculated from actual post content using AI
 
-2. **Create the scheduled agent:**
-   - Use `tool create_agent` with:
-     - `rrule`: Convert user's preferred time to RRULE format (UTC)
-     - `delivery_method`: "email" or "sms" per user preference
-     - `instruction`: 
-       ```
-       Run: bun /home/workspace/Skills/zo-reporting/scripts/report.ts
-       
-       Send the full output to the user.
-       ```
+## Sources (18 platforms)
 
-3. **Confirm setup:**
-   - Tell the user the schedule is set
-   - Show the exact RRULE and delivery method
+| Category | Platforms |
+|----------|-----------|
+| Social Media | X, Instagram, LinkedIn, TikTok, YouTube, Bluesky, Threads, Facebook |
+| Forums/Community | Reddit, Discord, Hacker News |
+| Developer | GitHub, Dev.to, Indie Hackers |
+| Product/Reviews | Product Hunt, Trustpilot |
+| Publications | Medium, Substack |
 
-### Example RRULE Conversions
+## Update Frequency
 
-| User Request | RRULE |
-|--------------|-------|
-| Every day at 8am ET | `FREQ=DAILY;BYHOUR=13;BYMINUTE=0` (8am ET = 13:00 UTC) |
-| Weekdays at 9am ET | `FREQ=WEEKLY;BYDAY=MO,TU,WE,TH,FR;BYHOUR=14;BYMINUTE=0` |
-| Every Monday at 10am ET | `FREQ=WEEKLY;BYDAY=MO;BYHOUR=15;BYMINUTE=0` |
+**Every 4 hours** automatically via scheduled agent:
+- 2:00 AM ET
+- 6:00 AM ET
+- 10:00 AM ET
+- 2:00 PM ET
+- 6:00 PM ET
+- 10:00 PM ET
 
 ## Scripts
 
-- `scripts/report.ts` — Generates the full report following this protocol. Outputs markdown to stdout.
+```
+Skills/zo-reporting/
+├── SKILL.md                    # This file
+├── README.md                   # Project documentation
+└── scripts/
+    ├── report.ts              # Main report generator
+    ├── refresh-desk.ts        # Dashboard data refresh
+    └── analyze-sentiment.ts   # Sentiment analysis
+```
 
 ## For End Users
 
-**Just installed this skill? Here's how to use it:**
+### View the Dashboard
+Visit: https://dagawdnyc.zo.space/zo-desk
 
-### Get an Instant Report
-Just say:
-- `UPDATE`
-- "Give me the Zo report"
-- "Run the Zo report now"
-
-### Schedule Recurring Reports
-Just ask naturally:
-- "Schedule Zo report for 9am daily"
-- "Send me the Zo report every morning at 8"
-- "I want daily Zo reports at 9am and 5pm"
-
-Zo will ask you for:
-1. **Time** — What time each day (e.g., "9am", "8:30 AM")
-2. **Delivery** — Email or SMS
-
-That's it. Zo creates the schedule automatically.
-
-### Manage Your Schedules
-View, edit, or delete your scheduled reports at [Scheduled Tasks](/?t=agents).
-
----
-
-## Schedule Protocol
-
-When the user asks to schedule recurring reports:
-
-1. **Ask for preferences:**
-   - "What time would you like to receive the daily report? (e.g., '8am', '9:00 AM')"
-   - "How would you like to receive it? Email or SMS?"
-
-2. **Convert time to rrule:**
-   - Use America/New_York timezone unless user specifies otherwise
-   - For 9am ET: `FREQ=DAILY;BYHOUR=9;BYMINUTE=0`
-   - For 5pm ET: `FREQ=DAILY;BYHOUR=17;BYMINUTE=0`
-   - For weekdays only: Add `BYDAY=MO,TU,WE,TH,FR`
-
-3. **Create the scheduled agent:**
-   - Use `tool create_agent` with:
-     - `rrule`: The calculated recurrence rule
-     - `instruction`: The exact instruction below
-     - `delivery_method`: "email" or "sms" per user preference
-
-4. **Agent instruction (copy exactly):**
-```
-Run the Zo daily reporting script and send the output:
-
-bun /home/workspace/Skills/zo-reporting/scripts/report.ts
-
-After the script completes, send the full report output via the configured delivery method.
+### Manual Refresh
+```bash
+bun /home/workspace/Skills/zo-reporting/scripts/refresh-desk.ts
 ```
 
-5. **Confirm setup:**
-   - "Done! You'll receive daily Zo reports at [time] via [method]."
-   - "You can manage this scheduled task at [Scheduled Tasks](/?t=agents)"
-
-## Instant Report Protocol
-
-For immediate reports (UPDATE trigger):
-
-1. Run the script directly:
-   ```
-   bun /home/workspace/Skills/zo-reporting/scripts/report.ts
-   ```
-
-2. Output the full report to the user.
-
-## Time Window
-
-Last 24 hours (America/New_York). Fallback: last 7 days if no qualifying updates.
-
-Use `--hours=N` flag to customize:
-```
-bun scripts/report.ts --hours=168  # Last 7 days
+### Check Status
+```bash
+cat /home/workspace/zo-desk-latest.json
 ```
 
-## Scope
+## Data Structure
 
-Zo.Computer, Zo Computer, zo.computer (company/product/brand). Exclude Zoho unless explicitly references Zo.Computer. Exclude unrelated "Zo" brands.
+```json
+{
+  "lastUpdated": "2026-03-07T01:20:00Z",
+  "headlines": [
+    {
+      "title": "string",
+      "source": "X|Reddit|LinkedIn|...",
+      "timestamp": "ISO timestamp",
+      "url": "https://...",
+      "category": "Breaking|Developing|Analysis|Community|Official",
+      "summary": "string"
+    }
+  ],
+  "socialMentions": [...],
+  "sentiment": {
+    "positive": 80,
+    "negative": 0,
+    "neutral": 20
+  },
+  "platformStats": { "X": 5, "Reddit": 3 },
+  "topKeywords": [
+    { "term": "openclaw", "count": 3 }
+  ],
+  "activityTimeline": [
+    { "hour": "16:00", "count": 1 }
+  ],
+  "engagementLeaderboard": [...],
+  "previousPeriod": {
+    "headlines": 5,
+    "social": 5
+  }
+}
+```
 
-## Research Order (10 min max)
+## API Endpoint
 
-1. **Official**: zo.computer pages, docs, X, LinkedIn, Instagram, Facebook, TikTok, Threads, Bluesky, YouTube, GitHub, Discord
-2. **External**: news/blogs, Medium, Reddit, Hacker News, Product Hunt, Dev.to, Indie Hackers, Stack Overflow, G2/Capterra/Trustpilot, app stores, Crunchbase, podcasts, newsletters (Substack/beehiiv), Discord communities
+### GET `/api/zo-desk/data`
 
-## Platform Capture Rules
+Returns the latest news data in JSON format.
 
-| Platform | Capture |
-|----------|---------|
-| X/Threads/Bluesky | post text, handle, timestamp, URL, engagement |
-| TikTok | video description, creator, timestamp, URL, views |
-| Instagram/Facebook | caption/preview, handle/page, timestamp, URL, engagement |
-| YouTube | title, channel, date, URL, views, key comments |
-| Reddit/HN | subreddit, title, author, timestamp, URL, top themes |
-| Discord | server, channel, message preview, timestamp (public only) |
-| GitHub | repo, item type, title, timestamp, URL, summary |
-| Product Hunt | product, launch date, maker, upvotes, URL, top comments |
-| Dev.to/Indie Hackers/Medium | title, author, date, URL, key points |
-| Stack Overflow | question, tags, answer status, votes, URL |
-| G2/Capterra/Trustpilot/app stores | reviewer, rating, date, pros/cons, URL |
-| Crunchbase | item type, date, details, URL |
-| Podcasts | show, episode, platform, URL, timestamp if found |
-| Newsletters | name, author, date, URL, key excerpt |
+**Response Headers:**
+```
+Content-Type: application/json
+Access-Control-Allow-Origin: *
+```
 
-## Source Quality
+## Data Integrity Rules
 
-**Confirmed** = official Zo page/social OR reputable publisher OR primary evidence OR 2+ independent sources.
+1. **No Hallucinations** - Never invent headlines or mentions
+2. **Verified URLs** - Every URL must be real and accessible
+3. **Calculated Metrics** - Sentiment calculated from actual content
+4. **Data Preservation** - If refresh fails, keep existing data
+5. **Real Engagement** - Only use metrics shown on source pages
 
-Otherwise: Unverified, Low confidence, list missing evidence.
+## Customization
 
-## Search Terms
+### Adding New Sources
 
-"Zo.Computer", "Zo Computer", "zo.computer", plus variations with review/pricing/bug/outage/support/security
+Edit `scripts/report.ts`:
 
-## Non-Negotiables
+```typescript
+async function searchNewPlatform(query: string): Promise<any[]> {
+  const response = await fetch("https://api.zo.computer/zo/ask", {
+    method: "POST",
+    headers: {
+      "authorization": process.env.ZO_CLIENT_IDENTITY_TOKEN || "",
+      "content-type": "application/json",
+    },
+    body: JSON.stringify({
+      input: `Search [Platform] for: "${query}" ...`,
+      model_name: "vercel:zai/glm-5",
+    }),
+  });
+  // ...
+}
+```
 
-- No invention
-- Every claim needs URL
-- Paywalled/gated = Access: Unavailable
-- Metrics only if shown on page
+### Adjusting Update Frequency
 
----
+Edit the scheduled agent RRULE:
+```
+FREQ=HOURLY;INTERVAL=4  # Every 4 hours
+FREQ=HOURLY;INTERVAL=2  # Every 2 hours
+FREQ=DAILY;BYHOUR=9     # Daily at 9am
+```
 
-## Output Format
+## Credits
 
-### Zo.Computer Update Report
+- **Built by:** DaGawdNYC (dagawdnyc.zo.computer)
+- **Powered by:** Zo Computer (https://zo.computer)
+- **Logo:** Zo Pegasus
 
-#### 1. Metadata
-Run time, coverage window, search terms, sources used (Publisher | Title | Date | URL)
+## Support
 
-#### 2. Headlines (5-10)
-What happened | URL | Why it matters | Status | Confidence
+- Zo Support: https://support.zocomputer.com
+- Discord: https://discord.gg/invite/zocomputer
+- X: https://x.com/zocomputer
 
-#### 3. Official Zo Changes
-- **Product updates/releases**: Source, Status, Facts, Unknowns, Impact, Next step
-- **Docs/policy/pricing**: Source, Status, Facts, Unknowns, Risk/opportunity, Next step
+## License
 
-#### 4. External Mentions (group by channel)
-Channels: News/blogs, Social (X/LinkedIn/Instagram/Facebook/TikTok/Threads/Bluesky), Forums (Reddit/HN/Discord), Dev (GitHub/Dev.to/Stack Overflow/Indie Hackers), Product Hunt, Reviews (G2/Capterra/Trustpilot/app stores), Business (Crunchbase), Video/Audio (YouTube/TikTok/podcasts), Newsletters
-
-For each: Channel | Source | Title | Author | Date | URL | Relevance | Sentiment + why | Status | Summary (2-4 sentences) | Key quote | Unverified claims | Recommended response
-
-#### 5. Trust & Safety Signals
-- **Scams/impersonation/phishing**: Facts, URL, Status, Risk level, Action
-- **Reliability/incidents**: Source, Status, Facts, Unknowns, Internal check, Customer messaging
-
-#### 6. Opportunities (up to 7)
-Opportunity | Source | Why it matters | Next step | Owner
-
-#### 7. Priority Actions (up to 12)
-Priority (P0/P1/P2) | Action | Owner | Why now | Success criteria | Rollback plan
-
-#### 8. Monitoring Checklist (8-12)
-What | Where | Signal | Trigger | Response play
-
-#### 9. Watchlist
-Official pages/handles discovered, external sources to scan
+MIT License

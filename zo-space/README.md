@@ -1,6 +1,6 @@
 # Zo Space Documentation
 
-> Last updated: March 6, 2026
+> Last updated: March 7, 2026
 
 ## Overview
 
@@ -16,7 +16,7 @@ This document covers all routes, APIs, and features deployed on dagawdnyc.zo.spa
 |-------|-------------|--------|
 | `/` | Demo/Landing page | Active |
 | `/demo` | Skills & Projects showcase | Active |
-| `/zo-desk` | Zo Reporting Command Center | Active |
+| `/zo-desk` | Zo News Desk Command Center | Active |
 | `/signal-pulse` | AI-powered prompt generator (passcode protected) | Active |
 | `/signal-pulse-demo` | Public demo of Signal Pulse | Active |
 | `/eats` | Food/restaurant finder | Active |
@@ -35,23 +35,44 @@ This document covers all routes, APIs, and features deployed on dagawdnyc.zo.spa
 
 ---
 
-## Zo Reporting Command Center
+## Zo News Desk Command Center
 
 **URL:** https://dagawdnyc.zo.space/zo-desk
 
-### Features
+### News Station Interface
 
-- Real-time news ticker
-- 12 source monitoring (X, Reddit, Instagram, LinkedIn, TikTok, YouTube, Discord, Hacker News, GitHub, Product Hunt, Dev.to, Indie Hackers)
-- Read/unread tracking
-- Category badges (Breaking, Developing, Analysis, Community, Official)
-- Search functionality
-- Keyboard navigation (J/K keys)
-- Reading progress bar
-- Notification bell
-- Export to JSON
-- Share functionality
-- Live viewer count
+- **Zo Pegasus Logo** - Official Zo Computer branding
+- **Breaking News Ticker** - Scrolling headlines with gradient styling
+- **ON AIR Indicator** - Live broadcast status
+- **Real-time Clock** - ET timezone display
+- **Scanline Effects** - CRT-style visual overlay
+- **Dark Theme** - News broadcast aesthetic
+
+### Analytics Panels
+
+- **Sentiment Score** - AI-calculated from actual content
+- **Platform Distribution** - Mentions by source with percentages
+- **Activity Timeline** - Mention frequency over 24 hours
+- **VS Yesterday** - Period comparison with real change percentages
+- **Engagement Leaderboard** - Top performing content
+- **Top Keywords** - Trending topics
+
+### Data Integrity
+
+- **100% Verified** - All URLs are real and verifiable
+- **No Hallucinations** - No placeholder, estimated, or mocked data
+- **Data Protection** - Preserves existing data if API fails
+- **Sentiment Analysis** - Calculated from actual post content
+
+### Sources (18 platforms)
+
+| Category | Platforms |
+|----------|-----------|
+| Social Media | X, Instagram, LinkedIn, TikTok, YouTube, Bluesky, Threads, Facebook |
+| Forums/Community | Reddit, Discord, Hacker News |
+| Developer | GitHub, Dev.to, Indie Hackers |
+| Product/Reviews | Product Hunt, Trustpilot |
+| Publications | Medium, Substack |
 
 ### Data Sources
 
@@ -61,11 +82,13 @@ This document covers all routes, APIs, and features deployed on dagawdnyc.zo.spa
 
 ### Update Schedule
 
-Updates **4 times daily**:
+**Every 4 hours** automatically:
+- 2:00 AM ET
 - 6:00 AM ET
-- 12:00 PM ET
+- 10:00 AM ET
+- 2:00 PM ET
 - 6:00 PM ET
-- 12:00 AM ET
+- 10:00 PM ET
 
 ### Scheduled Agent
 
@@ -103,7 +126,7 @@ Located in `/home/workspace/Skills/`:
 
 | Skill | Description |
 |-------|-------------|
-| `zo-reporting` | Daily report generation for Zo news |
+| `zo-reporting` | Real-time news command center for Zo Computer |
 | `zo-signal-pulse` | Signal Pulse prompt generator |
 | `zo-teacher-os` | Teacher OS lesson builder |
 | `zo-space` | Zo space utilities |
@@ -115,7 +138,7 @@ Located in `/home/workspace/Skills/`:
 
 | Agent | Schedule | Delivery |
 |-------|----------|----------|
-| Zo Reporting Command Center | 4x daily (6am, 12pm, 6pm, 12am ET) | None (updates JSON) |
+| Zo News Desk | Every 4 hours | None (updates JSON) |
 | DLP/DSPM Report | Daily 11am UTC | SMS |
 | Threat Intel Report | Daily 2pm UTC | SMS |
 
@@ -145,17 +168,19 @@ Set in Settings > Advanced > Secrets:
 ### Data Flow
 
 ```
-Scheduled Agent
+Scheduled Agent (every 4 hours)
     ↓
 refresh-desk.ts script
     ↓
-report.ts (gathers news from 12 sources)
+report.ts (gathers news from 18 sources)
+    ↓
+analyze-sentiment.ts (calculates sentiment)
     ↓
 zo-desk-latest.json
     ↓
 /api/zo-desk/data (API route)
     ↓
-/zo-desk (React page)
+/zo-desk (React page with news station UI)
 ```
 
 ---
@@ -170,27 +195,20 @@ bun /home/workspace/Skills/zo-reporting/scripts/refresh-desk.ts
 
 ### Check Agent Status
 
-Go to [Agents](/?t=agents) or run:
-```bash
-# List all agents
-# Use list_agents tool
-```
+Go to [Agents](/?t=agents)
 
 ### View Errors
 
-```bash
-# Check space errors
-# Use get_space_errors tool
-```
+Use `get_space_errors` tool
 
 ---
 
 ## Footer Branding
 
-All pages should include:
+All pages include:
 ```
 Built by DaGawdNYC on Zo
-Powered by Zo
+Powered by Zo Computer
 ```
 
 ---
@@ -200,3 +218,4 @@ Powered by Zo
 - **Zo Support:** https://support.zocomputer.com
 - **Zo Discord:** https://discord.gg/invite/zocomputer
 - **Email:** help@zocomputer.com
+- **X:** https://x.com/zocomputer

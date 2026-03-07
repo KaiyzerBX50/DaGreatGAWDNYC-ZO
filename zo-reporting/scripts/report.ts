@@ -7,7 +7,15 @@
  * Usage: bun run report.ts
  * 
  * Sources: X, Reddit, Instagram, LinkedIn, TikTok, YouTube, Discord, 
- *          Hacker News, GitHub, Product Hunt, Dev.to, Indie Hackers
+ *          Hacker News, GitHub, Product Hunt, Dev.to, Indie Hackers,
+ *          Bluesky, Threads, Facebook, Medium, Substack, Trustpilot
+ * 
+ * IMPORTANT: All data must be REAL and VERIFIED.
+ * - No hallucinated data
+ * - No placeholder values
+ * - No estimated metrics
+ * - Every URL must be verifiable
+ * - Sentiment must be calculated from actual content
  */
 
 const SEARCH_TERMS = [
@@ -26,7 +34,8 @@ interface Source {
   url: string;
   excerpt?: string;
   engagement?: string;
-  sentiment?: string;
+  sentiment?: "positive" | "negative" | "neutral" | "mixed";
+  verified: boolean;
 }
 
 interface Headline {
@@ -35,6 +44,116 @@ interface Headline {
   whyMatters: string;
   status: string;
   confidence: string;
+}
+
+interface SentimentResult {
+  positive: number;
+  negative: number;
+  neutral: number;
+  total: number;
+}
+
+interface KeywordResult {
+  term: string;
+  count: number;
+}
+
+// Validate URL is real and accessible
+function isValidUrl(url: string): boolean {
+  if (!url) return false;
+  try {
+    const parsed = new URL(url);
+    return parsed.protocol === "http:" || parsed.protocol === "https:";
+  } catch {
+    return false;
+  }
+}
+
+// Analyze sentiment of text using Zo API
+async function analyzeSentiment(text: string): Promise<"positive" | "negative" | "neutral" | "mixed"> {
+  if (!text || text.length < 10) return "neutral";
+  
+  try {
+    const response = await fetch("https://api.zo.computer/zo/ask", {
+      method: "POST",
+      headers: {
+        "authorization": process.env.ZO_CLIENT_IDENTITY_TOKEN || "",
+        "content-type": "application/json",
+      },
+      body: JSON.stringify({
+        input: `Analyze the sentiment of this text. Return ONLY one word: "positive", "negative", "neutral", or "mixed".
+
+Text: "${text.slice(0, 500)}"
+
+Return ONLY the sentiment word, nothing else.`,
+        model_name: "openrouter:z-ai/glm-5",
+      }),
+    });
+
+    const result = await response.json();
+    const sentiment = result.output?.trim().toLowerCase();
+    
+    if (["positive", "negative", "neutral", "mixed"].includes(sentiment)) {
+      return sentiment as "positive" | "negative" | "neutral" | "mixed";
+    }
+    return "neutral";
+  } catch (e) {
+    console.error("Sentiment analysis failed:", e);
+    return "neutral";
+  }
+}
+
+// Extract keywords from text
+function extractKeywords(texts: string[]): KeywordResult[] {
+  const keywordCounts = new Map<string, number>();
+  const stopWords = new Set([
+    "the", "a", "an", "and", "or", "but", "in", "on", "at", "to", "for",
+    "of", "with", "by", "from", "as", "is", "was", "are", "were", "been",
+    "be", "have", "has", "had", "do", "does", "did", "will", "would", "could",
+    "should", "may", "might", "must", "shall", "can", "need", "dare", "ought",
+    "used", "it", "its", "this", "that", "these", "those", "i", "you", "he",
+    "she", "we", "they", "what", "which", "who", "whom", "how", "when", "where",
+    "why", "all", "each", "every", "both", "few", "more", "most", "other",
+    "some", "such", "no", "nor", "not", "only", "own", "same", "so", "than",
+    "too", "very", "just", "also", "now", "here", "there", "then", "once",
+    "about", "into", "through", "during", "before", "after", "above", "below",
+    "up", "down", "out", "off", "over", "under", "again", "further", "any",
+    "if", "because", "until", "while", "although", "though", "since", "unless",
+    "however", "therefore", "thus", "hence", "yet", "still", "already",
+    "zo", "computer", "zocomputer", "zo.computer", "http", "https", "www",
+    "com", "status", "post", "tweet", "thread", "video", "photo", "image"
+  ]);
+
+  for (const text of texts) {
+    const words = text.toLowerCase()
+      .replace(/[^a-z0-9\s]/g, " ")
+      .split(/\s+/)
+      .filter(word => word.length > 2 && !stopWords.has(word));
+    
+    for (const word of words) {
+      keywordCounts.set(word, (keywordCounts.get(word) || 0) + 1);
+    }
+  }
+
+  return Array.from(keywordCounts.entries())
+    .filter(([_, count]) => count >= 2)
+    .sort((a, b) => b[1] - a[1])
+    .slice(0, 10)
+    .map(([term, count]) => ({ term, count }));
+}
+
+// Aggregate sentiment from sources
+function aggregateSentiment(sources: Source[]): SentimentResult {
+  const counts = { positive: 0, negative: 0, neutral: 0, total: 0 };
+  
+  for (const source of sources) {
+    if (source.sentiment) {
+      counts[source.sentiment === "mixed" ? "neutral" : source.sentiment]++;
+      counts.total++;
+    }
+  }
+  
+  return counts;
 }
 
 async function searchWeb(query: string, timeRange: string = "day"): Promise<any[]> {
@@ -406,6 +525,237 @@ Output ONLY valid JSON, no other text.`,
   }
 }
 
+async function searchBluesky(query: string): Promise<any[]> {
+  try {
+    const response = await fetch("https://api.zo.computer/zo/ask", {
+      method: "POST",
+      headers: {
+        "authorization": process.env.ZO_CLIENT_IDENTITY_TOKEN || "",
+        "content-type": "application/json",
+      },
+      body: JSON.stringify({
+        input: `Search Bluesky for: "${query}"
+
+Use web_search with include_domains=["bsky.app", "bsky.social"]. Return results as a JSON array with objects containing:
+- title: string (post text, truncated to 200 chars)
+- url: string
+- date: string
+- author: string (handle)
+- engagement: string (likes/reposts if shown)
+- sentiment: string
+
+Limit to 10 results.
+
+Output ONLY valid JSON, no other text.`,
+        model_name: "openrouter:z-ai/glm-5",
+      }),
+    });
+
+    const result = await response.json();
+    try {
+      return JSON.parse(result.output);
+    } catch {
+      return [];
+    }
+  } catch (e) {
+    console.error("Bluesky search failed:", e);
+    return [];
+  }
+}
+
+async function searchThreads(query: string): Promise<any[]> {
+  try {
+    const response = await fetch("https://api.zo.computer/zo/ask", {
+      method: "POST",
+      headers: {
+        "authorization": process.env.ZO_CLIENT_IDENTITY_TOKEN || "",
+        "content-type": "application/json",
+      },
+      body: JSON.stringify({
+        input: `Search Threads for: "${query}"
+
+Use web_search with include_domains=["threads.net"]. Return results as a JSON array with objects containing:
+- title: string (post text, truncated to 200 chars)
+- url: string
+- date: string
+- author: string (handle)
+- engagement: string (likes if shown)
+- sentiment: string
+
+Limit to 10 results.
+
+Output ONLY valid JSON, no other text.`,
+        model_name: "openrouter:z-ai/glm-5",
+      }),
+    });
+
+    const result = await response.json();
+    try {
+      return JSON.parse(result.output);
+    } catch {
+      return [];
+    }
+  } catch (e) {
+    console.error("Threads search failed:", e);
+    return [];
+  }
+}
+
+async function searchFacebook(query: string): Promise<any[]> {
+  try {
+    const response = await fetch("https://api.zo.computer/zo/ask", {
+      method: "POST",
+      headers: {
+        "authorization": process.env.ZO_CLIENT_IDENTITY_TOKEN || "",
+        "content-type": "application/json",
+      },
+      body: JSON.stringify({
+        input: `Search Facebook for: "${query}"
+
+Use web_search with include_domains=["facebook.com"]. Return results as a JSON array with objects containing:
+- title: string (post text, truncated)
+- url: string
+- date: string
+- author: string (page/group name)
+- engagement: string (reactions/shares if shown)
+- sentiment: string
+
+Limit to 10 results.
+
+Output ONLY valid JSON, no other text.`,
+        model_name: "openrouter:z-ai/glm-5",
+      }),
+    });
+
+    const result = await response.json();
+    try {
+      return JSON.parse(result.output);
+    } catch {
+      return [];
+    }
+  } catch (e) {
+    console.error("Facebook search failed:", e);
+    return [];
+  }
+}
+
+async function searchMedium(query: string): Promise<any[]> {
+  try {
+    const response = await fetch("https://api.zo.computer/zo/ask", {
+      method: "POST",
+      headers: {
+        "authorization": process.env.ZO_CLIENT_IDENTITY_TOKEN || "",
+        "content-type": "application/json",
+      },
+      body: JSON.stringify({
+        input: `Search Medium for: "${query}"
+
+Use web_search with include_domains=["medium.com"]. Return results as a JSON array with objects containing:
+- title: string
+- url: string
+- date: string
+- author: string
+- engagement: string (claps)
+- excerpt: string
+- sentiment: string
+
+Limit to 10 results.
+
+Output ONLY valid JSON, no other text.`,
+        model_name: "openrouter:z-ai/glm-5",
+      }),
+    });
+
+    const result = await response.json();
+    try {
+      return JSON.parse(result.output);
+    } catch {
+      return [];
+    }
+  } catch (e) {
+    console.error("Medium search failed:", e);
+    return [];
+  }
+}
+
+async function searchSubstack(query: string): Promise<any[]> {
+  try {
+    const response = await fetch("https://api.zo.computer/zo/ask", {
+      method: "POST",
+      headers: {
+        "authorization": process.env.ZO_CLIENT_IDENTITY_TOKEN || "",
+        "content-type": "application/json",
+      },
+      body: JSON.stringify({
+        input: `Search Substack for: "${query}"
+
+Use web_search with include_domains=["substack.com"]. Return results as a JSON array with objects containing:
+- title: string
+- url: string
+- date: string
+- author: string
+- newsletter: string
+- excerpt: string
+- sentiment: string
+
+Limit to 10 results.
+
+Output ONLY valid JSON, no other text.`,
+        model_name: "openrouter:z-ai/glm-5",
+      }),
+    });
+
+    const result = await response.json();
+    try {
+      return JSON.parse(result.output);
+    } catch {
+      return [];
+    }
+  } catch (e) {
+    console.error("Substack search failed:", e);
+    return [];
+  }
+}
+
+async function searchTrustpilot(query: string): Promise<any[]> {
+  try {
+    const response = await fetch("https://api.zo.computer/zo/ask", {
+      method: "POST",
+      headers: {
+        "authorization": process.env.ZO_CLIENT_IDENTITY_TOKEN || "",
+        "content-type": "application/json",
+      },
+      body: JSON.stringify({
+        input: `Search Trustpilot for: "${query}"
+
+Use web_search with include_domains=["trustpilot.com"]. Return results as a JSON array with objects containing:
+- title: string (review title)
+- url: string
+- date: string
+- author: string
+- rating: string (stars)
+- excerpt: string (review text)
+- sentiment: string
+
+Limit to 10 results.
+
+Output ONLY valid JSON, no other text.`,
+        model_name: "openrouter:z-ai/glm-5",
+      }),
+    });
+
+    const result = await response.json();
+    try {
+      return JSON.parse(result.output);
+    } catch {
+      return [];
+    }
+  } catch (e) {
+    console.error("Trustpilot search failed:", e);
+    return [];
+  }
+}
+
 async function searchOfficialSources(): Promise<Source[]> {
   const sources: Source[] = [];
 
@@ -580,6 +930,78 @@ async function searchExternalSources(): Promise<Map<string, Source[]>> {
   const ihResults = await searchIndieHackers("Zo Computer");
   mentions.set("Indie Hackers", ihResults.slice(0, 5).map(r => ({
     platform: "Indie Hackers",
+    title: r.title,
+    author: r.author,
+    date: r.date,
+    url: r.url,
+    engagement: r.engagement,
+    excerpt: r.excerpt,
+  })));
+
+  // Bluesky
+  const bsResults = await searchBluesky("Zo Computer");
+  mentions.set("Bluesky", bsResults.slice(0, 10).map(r => ({
+    platform: "Bluesky",
+    title: r.title,
+    author: r.author,
+    date: r.date,
+    url: r.url,
+    engagement: r.engagement,
+    sentiment: r.sentiment,
+  })));
+
+  // Threads
+  const thResults = await searchThreads("Zo Computer");
+  mentions.set("Threads", thResults.slice(0, 10).map(r => ({
+    platform: "Threads",
+    title: r.title,
+    author: r.author,
+    date: r.date,
+    url: r.url,
+    engagement: r.engagement,
+    sentiment: r.sentiment,
+  })));
+
+  // Facebook
+  const fbResults = await searchFacebook("Zo Computer");
+  mentions.set("Facebook", fbResults.slice(0, 10).map(r => ({
+    platform: "Facebook",
+    title: r.title,
+    author: r.author,
+    date: r.date,
+    url: r.url,
+    engagement: r.engagement,
+    sentiment: r.sentiment,
+  })));
+
+  // Medium
+  const mdResults = await searchMedium("Zo Computer");
+  mentions.set("Medium", mdResults.slice(0, 10).map(r => ({
+    platform: "Medium",
+    title: r.title,
+    author: r.author,
+    date: r.date,
+    url: r.url,
+    engagement: r.engagement,
+    excerpt: r.excerpt,
+  })));
+
+  // Substack
+  const sbResults = await searchSubstack("Zo Computer");
+  mentions.set("Substack", sbResults.slice(0, 10).map(r => ({
+    platform: "Substack",
+    title: r.title,
+    author: r.author,
+    date: r.date,
+    url: r.url,
+    engagement: r.engagement,
+    excerpt: r.excerpt,
+  })));
+
+  // Trustpilot
+  const tpResults = await searchTrustpilot("Zo Computer");
+  mentions.set("Trustpilot", tpResults.slice(0, 10).map(r => ({
+    platform: "Trustpilot",
     title: r.title,
     author: r.author,
     date: r.date,

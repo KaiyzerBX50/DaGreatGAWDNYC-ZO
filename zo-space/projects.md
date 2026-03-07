@@ -4,11 +4,18 @@ This directory contains documentation for all zo.space projects.
 
 ## Projects
 
-### [Zo Reporting Command Center](./zo-reporting/README.md)
+### [Zo News Desk Command Center](../zo-reporting/README.md)
 
-Real-time news dashboard monitoring 12 platforms for Zo Computer updates.
+Real-time news dashboard monitoring 18 platforms for Zo Computer updates with sentiment analysis and news station aesthetics.
 
 **Live URL:** https://dagawdnyc.zo.space/zo-desk
+
+**Features:**
+- 18 source platforms
+- Sentiment analysis
+- News station interface
+- 100% verified data
+- Updates every 4 hours
 
 ---
 
@@ -16,7 +23,7 @@ Real-time news dashboard monitoring 12 platforms for Zo Computer updates.
 
 | Project | URL | Status |
 |---------|-----|--------|
-| Zo Reporting Command Center | /zo-desk | Active |
+| Zo News Desk | /zo-desk | Active |
 | Signal Pulse | /signal-pulse | Active |
 | Signal Pulse Demo | /signal-pulse-demo | Active |
 | Demo/Projects | /demo | Active |
@@ -37,7 +44,8 @@ All zo.space routes use:
 ## Documentation
 
 - [Zo Space Overview](./README.md)
-- [Zo Reporting Command Center](./zo-reporting/README.md)
+- [Zo News Desk SKILL](../zo-reporting/SKILL.md)
+- [Zo News Desk README](../zo-reporting/README.md)
 
 ---
 
@@ -45,3 +53,4 @@ All zo.space routes use:
 
 - Zo Support: https://support.zocomputer.com
 - Discord: https://discord.gg/invite/zocomputer
+- X: https://x.com/zocomputer
