@@ -118,6 +118,13 @@ This document covers all routes, APIs, and features deployed on dagawdnyc.zo.spa
 /home/workspace/Skills/zo-signal-pulse/
 ```
 
+### Recent Updates (March 7, 2026)
+
+- **Fixed API Response Handling:** Now reads response as text first, then parses as JSON, preventing "Unexpected token" errors
+- **Added 3-Minute Timeout:** AI processing has a 3-minute timeout with clear error message if exceeded
+- **Improved Error Display:** Shows actual error messages from API instead of cryptic JSON parsing errors
+- **Fixed Result Display:** Analysis results now properly display after successful API calls
+
 ---
 
 ## Skills
