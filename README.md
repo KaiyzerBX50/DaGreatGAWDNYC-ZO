@@ -103,3 +103,9 @@ In `SKILL.md` frontmatter, under `metadata:` you can add:
 
 Do not commit API keys or passwords.
 Store secrets in Zo at **Settings → Advanced → Secrets**.
+
+**Important:** Each Zo Computer user has their own isolated secrets storage. Your secrets are stored only on your Zo instance and are never visible to anyone else. Likewise, you cannot see anyone else's secrets. This means:
+
+- Your API keys stay private to you
+- Other users of any Skill must set up their own keys
+- No shared credentials or security risks

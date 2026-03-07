@@ -32,6 +32,8 @@ bun /home/workspace/Skills/zo-signal-pulse/scripts/setup.ts
 
 This creates your private Signal Pulse pages on zo.space and configures them with your Zo API key. You'll be prompted to save two secrets: `SIGNAL_PULSE_ZO_API_KEY` and `SIGNAL_PULSE_PASSCODE`.
 
+**Important:** Each Zo Computer user sets up their own secrets in **Settings → Advanced → Secrets**. Your secrets are stored only on your Zo instance and are never visible to anyone else. Likewise, you cannot see anyone else's secrets.
+
 If you skip this, you can always run Signal Pulse from the command line.
 
 ## Quick start
