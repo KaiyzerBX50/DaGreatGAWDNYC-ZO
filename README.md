@@ -2,6 +2,32 @@
 
 This repository is the home for your Zo Skills.
 
+## Featured Project: Signal Pulse
+
+**Turn meeting notes into execution intelligence.**
+
+AI-powered meeting analysis with accountability scores, action items, and follow-up messages.
+
+- **Live:** https://dagawdnyc.zo.space/signal-pulse
+- **Demo:** https://dagawdnyc.zo.space/signal-pulse-demo
+- **Tech:** React + TypeScript, Tailwind CSS, zo.space (Bun + Hono)
+- **Documentation:** `zo-signal-pulse/SKILL.md`
+
+**Features:**
+- Extracts action items, decisions, risks, dependencies
+- Scores: Accountability, Clarity, Risk (0-100)
+- Meeting effectiveness grade (A-F)
+- Passcode-protected for private use
+
+**Latest (March 7, 2026):**
+- Fixed API response handling for better error display
+- Added 3-minute timeout with clear error messages
+- Improved error handling for all edge cases
+
+See `zo-signal-pulse/SKILL.md` for full documentation and setup guide.
+
+---
+
 ## Current skills
 
 - ai-adoption-playbook-for-teams
